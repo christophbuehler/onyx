@@ -1,0 +1,77 @@
+<dom-module id="o-menu">
+  <style>
+  </style>
+  <template>
+
+  <nav id="omenu" data-has-opened$="{{hasOpened}}">
+    <ul>
+      <!-- loop menu entries -->
+      <template is="dom-repeat" items="{{entries}}">
+        <o-menu-entry
+          title="{{item.0}}"
+          route="{{item.1}}"
+          sub="{{item.2}}"
+          has-parent-title="{{hasParentTitle}}"
+          has-back-link="{{hasBackLink}}"
+          prevent-parent-link="{{preventParentLink}}"></o-menu-entry>
+      </template>
+    </ul>
+  </nav>
+  </template>
+  <script>
+  Polymer({
+    is: 'o-menu',
+    properties: {
+
+      /**
+       * Include a back link for sub entries.
+       */
+      hasBackLink: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Display the parent of this entry as a title.
+       */
+      hasParentTitle: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Abort navigation if the element has children.
+       */
+      preventParentLink: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The menu entries.
+       */
+      entries: {
+        type: Array
+      }
+    },
+    ready: function() {
+      var _this = this;
+      this.pageTitle = [];
+    },
+
+    update: function(url, open) {
+      var currentEl = $(document.querySelector('#omenu')),
+          tempLink,
+          _this = this;
+
+      $('#omenu').find('.active').removeClass('active');
+
+      this.pageTitle = [];
+
+      $('o-menu-entry').each(function() {
+        if (this.update(url.split('/'), _this.pageTitle, open)) return false;
+      });
+    }
+  });
+  </script>
+</dom-module>

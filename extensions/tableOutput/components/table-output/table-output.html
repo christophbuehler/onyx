@@ -1,0 +1,347 @@
+<dom-module id="table-output">
+  <style>
+    :host {
+      display: block;
+      height: 100%;
+    }
+
+    .table-head {
+      white-space: nowrap;
+      padding-left: 48px;
+      display: inline-block;
+      min-width: 100%;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      background: var(--main-color);
+      padding-top: 8px;
+      flex-shrink: 0;
+      z-index: 1;
+      flex-grow: 0;
+      height: 40px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+
+    .table-head-wrapper {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    #fab-container { position: fixed; right: 24px; bottom: 80px; }
+    #fab-container paper-fab { margin-top: 16px; }
+    .new-fab {
+      --paper-fab-background: var(--main-color);
+    }
+    #fab-container { z-index: 10; }
+    #spinner { margin: 16px; }
+
+    :root {
+      --paper-tab-ink: var(--main-color);
+      --paper-tabs-selection-bar-color: var(--main-color);
+    }
+
+    .table-body { flex-shrink: 0; flex-grow: 1; display: inline-block; }
+    .table-output-card.opened .card-content { height: auto; }
+    .table-output-card.opened .down-btn { transform: rotate(180deg); }
+    .table-output-card { margin: 16px; display: block; }
+    .card-content { height: 112px; overflow: hidden; }
+    .card-actions paper-icon-button { color: #C21856; }
+    .table-output-bounding-box { height: 100%; }
+    .table-content { display: flex; height: 100%; position: relative; width: 100%; flex-direction: column; }
+    #overflowTabs { height: 80px; flex-shrink: 0; }
+    .table-scroll-box { position: relative; overflow-x: scroll; overflow-y: hidden; flex-grow: 1; }
+    .body-scroll-wrapper { position: absolute; height: 100%; overflow-y: scroll; }
+  </style>
+  <template strip-whitespace>
+    <div class="table-output-bounding-box">
+      <div class="table-output-info">
+        <div id="fab-container">
+
+          <!-- has at least one selection -->
+          <template is="dom-if" if="{{hasSelection}}">
+
+            <!-- show edit button because exactly one entry is selected -->
+            <template is="dom-if" if="{{hasOneSelection}}">
+              <paper-fab class="edit-fab" on-tap="showEditBlendBox" icon="icons:create"></paper-fab>
+            </template>
+
+            <!-- show delete button because more than one entry is selected -->
+            <paper-fab class="remove-fab" on-tap="showDeleteBlendBox" icon="remove"></paper-fab>
+          </template>
+
+          <!-- show new button because nothing is selected -->
+          <paper-fab class="new-fab" on-tap="showNewBlendBox" icon="add"></paper-fab>
+        </div>
+      </div>
+      <div hidden="{{!isLoading}}">
+        <div id="spinner">
+          <paper-spinner id="spinner" active></paper-spinner>
+        </div>
+      </div>
+      <div class="table-content" hidden="{{isLoading}}">
+        <div class="table-scroll-box">
+          <div class="table-head">
+            <div class="table-head-wrapper">
+
+              <!-- show table head -->
+              <template is="dom-repeat" items="{{structure}}"><!--
+                --><table-output-header order-by="{{orderBy}}" is-order-by-reversed="{{isOrderByReversed}}" field="{{item}}"></table-output-header><!--
+              --></template>
+            </div>
+          </div>
+          <div class="body-scroll-wrapper">
+            <div class="table-body" on-tap="updateHasSelection">
+
+              <!-- show table rows -->
+              <template is="dom-repeat" items="{{records}}"><!--
+              --><table-output-row structure="{{structure}}" row="{{item}}"></table-output-row><!--
+              --></template>
+            </div>
+          </div>
+        </div>
+        <template is="dom-if" if="printPageButtons">
+
+          <!-- print page buttons -->
+          <paper-tabs id="overflowTabs" scrollable selected="{{selectedPage}}">
+            <template is="dom-repeat" items="{{pageButtons}}">
+              <paper-tab on-tap="switchPage">
+                <div class='nav-btn'>
+                  <span class='num'>{{item.num}}</span>
+                  <span class='desc'>
+                    <span class='l'>{{item.from}}</span> to <span class='l'>{{item.to}}</span>
+                  </span>
+                </div>
+              </paper-tab>
+            </template>
+          </paper-tabs>
+        </template>
+      </div>
+    </div>
+    <blend-box
+      url="[[url]]"
+      table-output-id="[[id]]"
+      id="blendBox"></blend-box>
+  </template>
+  <script>
+    Polymer({
+      is: 'table-output',
+      properties: {
+        id: String,
+        printPageButtons: {
+          type: Boolean,
+          value: true
+        },
+        isLoading: {
+          type: Boolean,
+          value: false
+        },
+        orderBy: {
+          type: String,
+          value: ''
+        },
+        isOrderByReversed: {
+          type: Boolean,
+          value: false
+        },
+        selectedPage: {
+          type: Number,
+          value: 0
+        },
+        pageButtons: Array,
+        orientation: {
+          type: String,
+          value: 'vertical'
+        },
+        structure: {
+          type: Array,
+          value: []
+        },
+        records: {
+          type: Array,
+          value: []
+        },
+        singlePage: {
+          type: Boolean,
+          value: false
+        },
+        filter: {
+          type: Object,
+          value: function() { return {}; }
+        },
+        numberOfRecords: Number,
+        handler: Object,
+        hasOneSelection: {
+          type: Boolean,
+          value: false
+        },
+        hasSelection: {
+          type: Boolean,
+          value: false
+        },
+        url: String
+      },
+      ready: function() {
+        var _this = this;
+
+        // handles client-side table-output
+        this.handler = new TableOutputHandler(this, this.url + '/');
+
+        // load the first page
+        this.async(function() {
+          this.handler.currentPage = 0;
+          this.handler.loadPage();
+        });
+
+        // clicked on a header
+        this.addEventListener('update-order-by', function(e) {
+          var path = e.detail.path.join('.');
+
+          // this is currently the active order by field
+          if (_this.orderBy == path) {
+
+            if (_this.isOrderByReversed) {
+
+              // remove the order by
+              _this.orderBy = '';
+              _this.isOrderByReversed = false;
+            } else {
+
+              // reverse the order by
+              _this.isOrderByReversed = true;
+            }
+
+          // the active order by is something else
+          } else {
+
+            // set this as the active order by
+            _this.orderBy = path;
+            _this.isOrderByReversed = false;
+          }
+
+          // debounce order by job
+          this.debounce('update-order-by', function() {
+
+            // go to first page
+            _this.handler.currentPage = 0;
+
+            // reload the page
+            _this.handler.loadPage();
+          }, 400);
+        });
+
+        // clicked on a filter of a header
+        this.addEventListener('apply-filter', function(e) {
+          var field = e.detail.field,
+              path = e.detail.path.join('.');
+
+          // this field has an active filter
+          if (_this.handler.filter[path] && _this.handler.filter[path].isApplied) {
+
+            // remove this filter
+            _this.handler.filter[path].isApplied = false;
+
+            // detach filter
+            e.detail.detach();
+
+            // reload page
+            _this.handler.loadPage();
+
+            return;
+          }
+
+          // set this filter
+          _this.handler.showFilterBlendBox(field, path, function() {
+
+            // attach filter
+            e.detail.attach();
+
+            // go to first page
+            _this.handler.currentPage = 0;
+
+            // reload page
+            _this.handler.loadPage();
+          });
+        });
+
+        this.addEventListener('insert', function(e) {
+          var data = e.detail;
+          _this.handler.insert(data.url, data.id, data.data, data.submit);
+        });
+
+        this.addEventListener('get-reverse-link', function(e) {
+          _this.handler.getReverseLink(e.detail.url, e.detail.id, e.detail.fieldName, e.detail.value, e.detail.success);
+        });
+      },
+
+      /**
+       * Update page nav buttons.
+       * @param  Array buttons a list of buttons
+       * @return void
+       */
+      updateNavButtons: function(buttons) {
+        this.pageButtons = buttons;
+      },
+
+      updateRecords: function(records) {
+        this.records = records;
+      },
+
+      /**
+       * Show new blend-box.
+       * @return void
+       */
+      showNewBlendBox: function() {
+        this.handler.showNewBlendBox();
+      },
+
+      /**
+       * Show delete blend-box.
+       * @return void
+       */
+      showDeleteBlendBox: function() {
+        this.handler.showDeleteBlendBox();
+      },
+
+      /**
+       * Show edit blend-box.
+       * @return void
+       */
+      showEditBlendBox: function() {
+        this.handler.showEditBlendBox();
+      },
+
+      updateHasSelection: function() {
+        var l = this.records.filter(function(record) {
+          return record.checked;
+        }).length;
+        this.hasSelection = l != 0;
+        this.hasOneSelection = l == 1;
+      },
+
+      /**
+       * Switch to the selected page.
+       * @param  Object the event
+       * @return void
+       */
+      switchPage: function(e) {
+        var handler = this.handler,
+            index;
+
+        // wait for event execution
+        this.async(function() {
+          index = this.selectedPage;
+
+          // already on this page
+          if (handler.currentPage == index) return;
+
+          // set page index
+          handler.currentPage = index;
+
+          // load page
+          handler.currentPage = index;
+          handler.loadPage();
+        });
+      }
+    });
+  </script>
+</dom-module>

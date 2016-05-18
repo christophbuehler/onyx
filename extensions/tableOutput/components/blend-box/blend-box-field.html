@@ -1,0 +1,293 @@
+<dom-module id="blend-box-field">
+  <style>
+    :host {
+      display: flex;
+      position: relative;
+      width: 178px;
+      height: 62px;
+      padding: 0 11px;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+    #new-link-btn {
+      color: red;
+      cursor: pointer;
+      display: inline-block;
+    }
+    #edit-link-btn {
+      cursor: pointer;
+      color: #2288bb;
+      display: inline-block;
+    }
+    #required-star {
+      color: red;
+      display: inline-block;
+      font-size: 16px;
+      width: 16px;
+      text-align: center;
+    }
+    #btns { position: absolute; right: 0; top: 0; font-size: 10px; }
+    #autocompleteList { position: absolute; z-index: 2; left: 0; top: 52px; width: 100%; }
+    #autocompleteList ul { padding: 0; margin: 0; border: 1px solid #f2f2f2; border-top: none; }
+    #autocompleteList li { cursor: default; border-bottom: 1px solid #f2f2f2; display: block; width: 100%; background: #fff; list-style: none; padding: 4px 16px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box; }
+    #autocompleteList li:last-child { border-bottom: none; }
+    #autocompleteList li:hover { background: #f2f2f2; }
+    #autocompleteList span { line-height: 12px; height: 12px; font-size: 12px; white-space: nowrap; display: inline-block; width: 100%; overflow: hidden; text-overflow: ellipsis; }
+
+    paper-input { width: 178px; }
+  </style>
+  <template strip-whitespace>
+    <div hidden="[[!showProposals]]" id="autocompleteList">
+      <ul>
+        <template is="dom-repeat" items="[[proposals]]">
+          <li data-value$="[[item.value]]" data-content$="[[item.content]]" on-mousedown="setAutocompleteValue">
+            <template is="dom-repeat" items="[[item.content]]">
+              <span><template is="juicy-html" content$="[[item]]"></template></span>
+            </template>
+          </li>
+        </template>
+      </ul>
+    </div>
+
+    <template is="dom-if" if="[[contains('bool', field.type)]]">
+      <paper-checkbox id="input" checked="{{field.content}}">[[field.header]]</paper-checkbox>
+    </template>
+
+    <template is="dom-if" if="[[contains('text date stars email number link', field.type)]]">
+      <paper-input id="input" on-blur="unsetShowProposals" on-focus="setShowProposals" always-float-label="[[contains('date', field.type)]]" type="[[getInputType(field)]]" label="[[field.header]]" value="{{field.content::input}}"></paper-input>
+    </template>
+
+    <div id="btns">
+
+      <!-- display reference -->
+      <template is="dom-if" if="[[hasLinkReference(field)]]">
+
+        <!-- display edit reference button -->
+        <template is="dom-if" if="{{hasLinkValue(field.value)}}">
+          <div id="edit-link-btn" on-tap="openEditLink">bearbeiten</div>
+        </template>
+
+        <!-- display new reference button -->
+        <div id="new-link-btn" on-tap="openNewLink">neu</div>
+
+      </template>
+      <template is="dom-if" if="[[field.required]]">
+        <div id="required-star">*</div>
+      </template>
+    </div>
+  </template>
+  <script>
+  var id = 0;
+  Polymer({
+    is: 'blend-box-field',
+    properties: {
+
+      // required
+      field: {
+        type: Object,
+        notify: true
+      },
+
+      url: String,
+
+      showProposals: {
+        type: Boolean,
+        value: false
+      },
+
+      // optional
+      proposals: {
+        type: Array,
+        value: []
+      }
+    },
+
+    setShowProposals: function() {
+      this.showProposals = true;
+    },
+
+    unsetShowProposals: function(e) {
+      this.showProposals = false;
+      return false;
+    },
+
+    hasLinkId: function(field) {
+      return field.link && field.link.id;
+    },
+
+    hasLinkReference: function(field) {
+      return field.link && field.link.reference;
+    },
+
+    /**
+     * Checks if this field has a link as its value.
+     * @return bool
+     */
+    hasLinkValue: function(val) {
+      return val !== null && ~~val !== 0;
+    },
+
+    /**
+     * Field loaded.
+     *
+     * @return void
+     */
+    ready: function() {
+      this.id = id++;
+
+      this.async(function() {
+        if (this.contains('bool', this.field.type)) {
+          this.set('field.content', this.field.value == 1);
+          this.$$('#input').addEventListener('change', this.processBoolInput.bind(this));
+        } else {
+          this.$$('#input').addEventListener('input', this.processInput.bind(this));
+          this.$$('#input').addEventListener('focus', this.processInput.bind(this));
+        }
+      });
+    },
+
+    openNewLink: function() {
+      this.fire('open-new-link', { field: this });
+    },
+
+    openEditLink: function() {
+      alert('Diese Funktion ist noch nicht implementiert.');
+      // this.fire('open-edit-link', { field: this });
+    },
+
+    getInputType: function(field) {
+      switch(field.type) {
+        case 'date':
+          return 'date';
+        case 'email':
+          return 'email';
+        case 'stars':
+        case 'number':
+          return 'number';
+      }
+      return 'text';
+    },
+
+    processBoolInput: function() {
+      this.set('field.value', this.field.content ? 1 : 0);
+    },
+
+    processInput: function() {
+      var _this = this,
+          val = this.field.content || '';
+
+      if (this.field.type != 'link') {
+        this.field.value = this.field.content;
+        this.set('field.value', this.field.content);
+        return;
+      }
+
+      if (val == '') {
+        this.field.value = null;
+        this.set('field.value', null);
+      }
+
+      // get the autocomplete list
+      $.get(sprintf('%s/%s&l=%s', this.url, this.field.link.id, val), function(data) {
+        var p;
+
+        // update proposals
+        p = JSON.parse(data);
+        p.map(function(item) {
+          item.content = _this.mark(item.content, val);
+        });
+
+        _this.proposals = p;
+
+        _this.set('proposals', _this.proposals);
+        _this.notifyPath('proposals', _this.proposals);
+
+        _this.setShowProposals();
+
+        // set the value if the input matches a content
+        // the value always matches a proposal
+        _this.proposals.filter(function(proposal) {
+          return _this.proposalToContent(proposal.content).toLowerCase() == val.toLowerCase();
+        }).map(function(proposal) {
+
+          // update value (and content, to fix capitalization)
+          _this.updateValue(proposal.value, _this.proposalToContent(proposal.content))
+
+          // hide proposals
+          _this.unsetShowProposals();
+        });
+      });
+    },
+
+    mark: function(arr, val) {
+      var p = 0, nArr = [], n, l;
+      val = val.toLowerCase();
+      arr.map(function(item) {
+        n = '';
+        item.split('').map(function(char) {
+          l = char.toLowerCase();
+          if (val[p] == l) {
+            if (p === 0 || n == '') n += '<b>';
+            p++;
+            n += char;
+            return;
+          }
+          if (p === 0) {
+            n += char;
+            return;
+          }
+          n += '</b>';
+          n += char;
+          p = 0;
+        });
+        if (p !== 0) {
+          n += '</b>';
+          p++;
+        }
+        nArr.push(n);
+      });
+      return nArr;
+    },
+
+    setAutocompleteValue: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var model = e.model.item;
+      this.updateValue(model.value, this.proposalToContent(model.content));
+
+      // hide proposals
+      this.unsetShowProposals();
+    },
+
+    proposalToContent: function(proposal) {
+      return proposal.join(' ')
+        .replace(/<b>/g, '')
+        .replace(/<\/b>/g, '');
+    },
+
+    updateValue: function(value, content) {
+      this.field.content = content;
+      this.field.value = value;
+      this.set('field.content', content);
+      this.set('field.value', value);
+    },
+
+    getReference: function() {
+      var ref = this.field.link.reference;
+      return sprintf('%s', ref[0]);
+    },
+
+    getReferenceId: function() {
+      return this.field.link.reference[1];
+    },
+
+    contains: function(list, needle) {
+      return list.split(' ').filter(function(a) { return a == needle; }).length > 0;
+    }
+  });
+  </script>
+</dom-module>

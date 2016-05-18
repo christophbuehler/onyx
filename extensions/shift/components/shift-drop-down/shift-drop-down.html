@@ -1,0 +1,91 @@
+<dom-module id="shift-drop-down">
+  <template>
+    <style>
+      :host {
+        height: 50px;
+        display: inline-block;
+        position: relative;
+      }
+      #shift-drop-down {
+        height: 50px;
+        display: inline-block;
+        position: relative;
+      }
+      #btn {
+        height: 54px;
+        line-height: 54px;
+        width: 54px;
+        text-align: center;
+        color: #fff;
+        font-size: 24px;
+        cursor: default;
+      }
+      ul {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        background: #f2f2f2;
+        top: 54px;
+        right: 4px;
+        z-index: 5;
+        width: 160px;
+      }
+      ul:after {
+        content: " ";
+        border-style: solid;
+        border-color: transparent transparent #f2f2f2;
+        border-width: 8px;
+        position: absolute;
+        top: -15px;
+        right: 12px;
+      }
+    </style>
+
+    <div id="shift-drop-down">
+      <div id="btn" on-click="toggle" class="material-icons">more_vert</div>
+      <template is="dom-if" if="{{show}}">
+        <ul>
+          <content></content>
+        </ul>
+      </template>
+    </div>
+  </template>
+  <script>
+    Polymer({
+        is: 'shift-drop-down',
+        ready: function() {
+
+        },
+        properties: {
+          show: {
+            type: Boolean,
+            value: false
+          }
+        },
+        toggle: function() {
+          this.show = !this.show;
+        },
+        init: function() {
+
+          var clickedInside = false;
+          $('.shift-drop-down-btn').each(function() {
+            $(this).parent().find('ul').on(clickEvt, function(evt) {
+              clickedInside = true;
+            });
+            $(this).on(clickEvt, function(evt) {
+              evt.stopPropagation();
+              evt.preventDefault();
+              $(this).parent().find('ul').toggle();
+            });
+          });
+          $('body').on(clickEvt, function() {
+            if (clickedInside) {
+              clickedInside = false;
+              return;
+            }
+            this.$.btn
+          }.bind(this));
+        }
+    });
+  </script>
+</dom-module>

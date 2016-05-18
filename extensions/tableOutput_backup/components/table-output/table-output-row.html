@@ -1,0 +1,59 @@
+<dom-module id="table-output-row">
+  <style>
+    :host {
+      display: block;
+    }
+    .row-actions { float: left; white-space: nowrap; padding-left: 16px; overflow: hidden; width: 32px;
+      -webkit-transition: width .2s ease;
+      -o-transition: width .2s ease;
+      transition: width .2s ease; }
+    .row-actions[data-show-actions] { width: 96px; }
+    .row-actions > paper-icon-button {
+      height: 32px;
+      width: 32px;
+      display: inline-block;
+    }
+    .row-actions paper-checkbox {
+      height: 22px;
+      width: 22px;
+      padding: 5px;
+      --paper-checkbox-unchecked-color: rgba(0,0,0,0.5);
+    }
+  </style>
+  <template>
+    <div class="row" on-tap="toggleRow" data-row-id$="{{row.id}}">
+      <div class="row-actions">
+        <paper-checkbox disabled checked="{{row.checked}}"></paper-checkbox>
+      </div>
+
+      <!-- show record -->
+      <template is="dom-repeat" items="{{row.fields}}">
+        <table-output-field
+          type="{{arrayItem(structure.*, index, 'type')}}"
+          value="{{item.value}}"
+          content="{{item.content}}"></table-output-field>
+      </template>
+    </div>
+  </template>
+  <script>
+  Polymer({
+    is: 'table-output-row',
+    properties: {
+      row: Object,
+      structure: Array,
+      tableOutput: Object
+    },
+    arrayItem: function(change, index, path) {
+      var c = change.base[index];
+      if (path) return this.get(path, c);
+      return c;
+    },
+    toggleRow: function() {
+      this.set('row.checked', !this.row.checked);
+    },
+    isChecked: function(row) {
+      return row.checked;
+    }
+  });
+  </script>
+</dom-module>

@@ -1,0 +1,82 @@
+$(function() {
+	$('.graph-output').each(function() {
+		var graph = new GraphOutput(this);
+		graph.draw();
+	});
+});
+
+var GraphOutput = function(el) {
+	this.el = el;
+
+	this.type = $(el).attr('data-type');
+
+	this.colors = $(el).attr('data-colors').split(';');
+	this.headers = $(el).attr('data-headers').split(';');
+	this.values = $(el).attr('data-values').split(';');
+	this.width = $(el).width();
+	this.height = $(el).height();
+  
+	// offset from center
+	this.offset = 4;
+
+	this.ctx = $(el)[0].getContext('2d');
+	this.r = (Math.min(this.width, this.height) - 16) / 2;
+};
+
+GraphOutput.prototype = {
+	draw: function() {
+		var _this = this,
+			valueSum = 0,
+			f, c = 0, i;
+		
+		this.values.map(function(value) {
+			valueSum += ~~value;
+		});
+		f = (Math.PI * 2) / valueSum;
+
+		this.tmpOffset = 0;
+		
+		var drawAll = function() {
+			_this.tmpOffset++;
+			_this.ctx.clearRect(0, 0, _this.width, _this.height);
+			i = 0;
+			_this.values.map(function(value) {
+				_this.drawSection(c, c + f * value, _this.colors[i]);
+				_this.drawHeader(_this.headers[i] + " (" + value + ")", i, _this.colors[i]);
+				c += f * value;
+				i++;
+			});
+		}
+		drawAll();
+		setTimeout(function() {
+			var animInt = setInterval(function() {
+				drawAll();
+				if (_this.tmpOffset == _this.offset) clearInterval(animInt);
+			}, 80);
+		}, 800);
+	},
+	drawSection: function(begin, end, color) {
+		var pos = new V(this.r + 16, this.height / 2).moveTowardsAngle((begin + end) / 2, this.tmpOffset);
+		this.ctx.beginPath();
+
+		this.ctx.fillStyle = color;
+		this.ctx.lineTo(pos.x, pos.y);
+		this.ctx.arc(pos.x, pos.y, this.r, begin, end);
+		this.ctx.moveTo(pos.x, pos.y);
+		this.ctx.fill();
+		this.ctx.closePath();
+	},
+	drawHeader: function(text, index, color) {
+		var x = this.r * 2 + 32,
+			y = index * 28 + this.height / 2;
+
+		this.ctx.beginPath();
+		this.ctx.fillRect(x, y, 12, 12);
+		this.ctx.fillStyle = "red";
+		this.ctx.fill();
+		this.ctx.fillStyle = "#333333";
+		this.ctx.fillText(text, x + 16, y + 10);
+
+		this.ctx.closePath();
+	}
+};

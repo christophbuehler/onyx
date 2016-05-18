@@ -1,0 +1,191 @@
+<dom-module id="table-output-header">
+  <style>
+    :host {
+      position: relative;
+      padding: 0;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .container { padding: 0; cursor: default; position: relative; display: flex; white-space: nowrap; height: 32px; padding: 12px 8px 0;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      -webkit-transition: padding .2s ease;
+      -o-transition: padding .2s ease;
+      transition: padding .2s ease; }
+
+    span { display: inline-block; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 400; line-height: 20px; height: 20px; letter-spacing: 1px; font-size: 11px; }
+
+    #text { width: 120px; }
+    #number { width: 100px; }
+    #bool { width: 160px; }
+    #date { width: 100px; }
+    #email { width: 200px; }
+    #stars { width: 80px; }
+    .container[data-is-order-by] { }
+    .container[data-is-reversed-order-by] .order-by-btn {
+      -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+      -o-transform: rotate(180deg);
+      transform: rotate(180deg); }
+
+    paper-icon-button { height: 20px; width: 22px; color: #fff; padding: 0px 2px 4px; vertical-align: top; flex-shrink: 0; }
+
+    .filter-btn[data-active] { color: #fff; }
+    .order-by-btn {
+      -webkit-transition: transform .2s ease;
+      -o-transition: transform .2s ease;
+      transition: transform .2s ease; }
+    #breadcrumb { position: absolute; left: 0; top: 0; width: 100%; overflow: hidden; padding: 0 8px;
+      text-overflow: ellipsis; letter-spacing: 1px; color: #fff; font-size: 10px; line-height: 12px; height: 12px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box; }
+  </style>
+  <template strip-whitespace>
+
+    <template is="dom-if" if="[[contains('link', field.type)]]">
+      <template is="dom-repeat" items="{{field.link.fields}}"><!--
+        --><table-output-header breadcrumb="{{breadcrumb}} › {{field.header}}" order-by="{{orderBy}}" is-order-by-reversed="{{isOrderByReversed}}" is-link field="{{item}}"></table-output-header><!--
+      --></template>
+    </template>
+
+    <!-- hidden fields don't require a header -->
+    <template is="dom-if" if="[[!contains('hidden link', field.type)]]">
+      <div on-tap="updateOrderBy" id="breadcrumb">{{breadcrumb}}</div>
+
+      <div class="container" data-is-reversed-order-by$="{{isOrderByReversed}}" data-is-order-by$="{{isOrderBy(orderBy, field)}}" id="{{field.type}}">
+
+        <div on-tap="updateOrderBy">
+
+          <!-- display order by arrow -->
+          <paper-icon-button hidden="{{!isOrderBy(orderBy, field)}}" class="order-by-btn" icon="icons:arrow-downward"></paper-icon-button>
+
+          <!-- text -->
+          <template is="dom-if" if="{{equals(field.type, 'text')}}">
+            <span>{{field.header}}</span>
+          </template>
+
+          <!-- number -->
+          <template is="dom-if" if="{{equals(field.type, 'number')}}">
+            <span>{{field.header}}</span>
+          </template>
+
+          <!-- email -->
+          <template is="dom-if" if="{{equals(field.type, 'email')}}">
+            <span>{{field.header}}</span>
+          </template>
+
+          <!-- bool -->
+          <template is="dom-if" if="{{equals(field.type, 'bool')}}">
+            <span>{{field.header}}</span>
+          </template>
+
+          <!-- date -->
+          <template is="dom-if" if="{{equals(field.type, 'date')}}">
+            <span>{{field.header}}</span>
+          </template>
+
+          <!-- stars -->
+          <template is="dom-if" if="{{equals(field.type, 'stars')}}">
+            <span>{{field.header}}</span>
+          </template>
+        </div>
+
+        <!-- display a filter button -->
+        <paper-icon-button
+          on-tap="filterTap"
+          class="filter-btn"
+          data-active$="{{field.filter.isApplied}}"
+          icon="icons:filter-list"></paper-icon-button>
+
+      </div>
+    </template>
+  </template>
+  <script>
+  Polymer({
+    is: 'table-output-header',
+    properties: {
+      field: {
+        type: Object,
+        notify: true
+      },
+      isLink: Boolean,
+      orderBy: {
+        type: String,
+        value: ''
+      },
+      isOrderByReversed: {
+        type: Boolean,
+        value: false
+      },
+      breadcrumb: {
+        type: String,
+        value: ''
+      }
+    },
+
+    ready: function() {
+      var _this = this, i;
+      this.addEventListener('update-order-by', function(e) {
+        e.detail.path.push(_this.field.name);
+      });
+      this.addEventListener('apply-filter', function(e) {
+        e.detail.path.push(_this.field.name);
+      });
+    },
+
+    equals: function(a, b) {
+      return a == b;
+    },
+
+    filterTap: function() {
+      var _this = this;
+
+      // attach or detach filter
+      this.fire('apply-filter', {
+        field: this.field,
+        path: [],
+
+        // attach filter
+        attach: function() {
+          _this.field.filter.isApplied = true;
+          _this.set('field.filter.isApplied', true);
+        },
+
+        // detach filter
+        detach: function() {
+          _this.field.filter.isApplied = false;
+          _this.set('field.filter.isApplied', false);
+        }
+      });
+    },
+
+    updateOrderBy: function() {
+      var _this = this;
+
+      this.async(function() {
+
+        // update order by
+       _this.fire('update-order-by', {
+          path: [ ]
+        });
+      });
+    },
+
+    isOrderBy: function(orderBy, field) {
+      var p = $(this).parent('table-output-header'), thisOrderBy = field.name, header;
+      while (p.length > 0) {
+        header = p[0];
+        thisOrderBy = thisOrderBy + '.' + header.field.name;
+        p = $(header).parent('table-output-header');
+      }
+      return thisOrderBy == orderBy;
+    },
+
+    contains: function(list, needle) {
+      return list.split(' ').filter(function(a) { return a == needle; }).length > 0;
+    }
+  });
+  </script>
+</dom-module>

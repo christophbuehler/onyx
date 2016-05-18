@@ -1,0 +1,211 @@
+<dom-module id="blend-box">
+  <style>
+    :host {}
+
+    #blend-box-content {
+      display: flex;
+      flex-wrap: wrap;
+      width: 800px;
+      justify-content: flex-start;
+    }
+
+    #error { color: #F44336; }
+
+    @media all and (max-width: 800px) {
+      #blend-box-content {
+        width: 600px;
+      }
+    }
+    @media all and (max-width: 600px) {
+      #blend-box-content {
+        width: 400px;
+      }
+    }
+    @media all and (max-width: 400px) {
+      #blend-box-content {
+        width: 200px;
+      }
+    }
+  </style>
+  <template>
+    <paper-dialog id="dialog" with-backdrop entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+      <h2>{{caption}}</h2>
+      <paper-dialog-scrollable>
+        <form is="iron-form" id="form">
+          <div id="blend-box-content">
+            <template is="dom-repeat" items="{{fields}}">
+              <template is="dom-if" if="[[!item.hidden]]">
+                <blend-box-field field="{{item}}" url="[[url]]"></blend-box-field>
+              </template>
+            </template>
+          </div>
+
+        </form>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Abbrechen</paper-button>
+        <paper-button on-tap="validate">Speichern</paper-button>
+      </div>
+      <div hidden="[[!hasErrors]]">
+        <div id="error">{{errorMessage}}</div>
+      </div>
+    </paper-dialog>
+
+    <!-- child blend-box -->
+    <div id="blendBoxContainer"></div>
+  </template>
+  <script>
+    BlendBox = Polymer({
+      is: 'blend-box',
+      properties: {
+        fields: {
+          type: Array,
+          notify: true,
+          value: function() {
+            return [];
+          }
+        },
+        tableOutputId: String,
+        url: String,
+        caption: String,
+        visible: Boolean,
+        submitFunction: Function,
+        abortFunction: Function,
+        hasErrors: false,
+        hasSubmit: false,
+        errorMessage: String
+      },
+
+      factoryImpl: function(tableOutputId, url) {
+        this.tableOutputId = tableOutputId;
+        this.url = url;
+      },
+
+      ready: function() {
+        this.init();
+      },
+
+      validate: function() {
+        var _this = this,
+            submitData = {};
+
+        // create lightweight submit data
+        this.fields.map(function(field) {
+          submitData[field.name] = field.value;
+        });
+
+        // execute submit function
+        this.submitFunction(submitData, function() {
+
+          // content was valid
+          _this.$.dialog.close();
+        });
+      },
+
+      /**
+       * Open the blend-box.
+       * @param  String caption The blend-box caption.
+       * @param  Object data    Blend box data.
+       * @return void
+       */
+      open: function(caption, data) {
+        this.caption = caption;
+
+        this.hasSubmit = !(!data || !data.submit);
+        this.submitFunction = (data && data.submit) ? data.submit.bind(this) : null;
+        this.abortFunction = (data && data.abort) ? data.abort.bind(this) : null;
+
+        // assign fields
+        this.set('fields', []);
+        this.errorMessage = '';
+        Polymer.dom.flush();
+        data.fields.map(function(field) {
+          this.push('fields', field);
+        }.bind(this));
+
+        // wait till the DOM updated
+        this.async(function() {
+
+          // wait until the dialog updated
+          this.$.dialog.async(function() {
+
+            // center the dialog
+            this.notifyResize();
+
+            this.open();
+          });
+        });
+      },
+
+      /**
+       * An error occured.
+       * @param  string msg the error message
+       * @return void
+       */
+      error: function(msg) {
+        this.errorMessage = msg;
+        this.hasErrors = true;
+      },
+
+      init: function() {
+        var _this = this;
+
+        $(this.container).on('submit', '.blend-box-form', function(evt) {
+          evt.stopPropagation();
+          evt.preventDefault();
+          this.invokeSubmit();
+        }.bind(this));
+
+        this.addEventListener('open-new-link', function(e) {
+          var field = e.detail.field,
+              box = new BlendBox(field.getReferenceId(), field.getReference());
+
+          e.preventDefault();
+          e.stopPropagation();
+
+          _this.$.blendBoxContainer.appendChild(box);
+
+          // get the child blend-box structure
+          $.get(sprintf('%s/structure?id=%s', field.getReference(), field.getReferenceId()), function(data) {
+            data = JSON.parse(data);
+
+            box.open(field.header, {
+              fields: data,
+              submit: function(data, success) {
+                _this.fire('insert', { url: field.getReference() + '/', id: field.getReferenceId(), data: data, submit: function(data) {
+                  var value;
+
+                  data = utils.parseResponse(data);
+
+                  // successfully inserted row
+                  if (data.code === 0) {
+                    success(data.msg);
+
+                    value = data.id;
+
+                    _this.fire('get-reverse-link', { url: _this.url + '/', id: _this.tableOutputId, fieldName: field.field.name, value: value, success: function(content) {
+                      field.updateValue(value, content);
+                    }});
+
+                    return;
+                  }
+
+                  // an error occured
+                  box.error(data.msg);
+                }});
+              }
+            });
+          });
+        });
+
+        // $(this.container).on(clickEvt, '.blend-box-required', function(evt) {
+        //   if ($('.blend-box-form').attr('data-show-all') == 'true') {
+        //     $('.blend-box-form').attr('data-show-all', 'false');
+        //     return;
+        //   }
+        //   $(this.container).find('.blend-box-form').attr('data-show-all', 'true');
+        // }.bind(this));
+      }
+    });
+  </script>
+</dom-module>

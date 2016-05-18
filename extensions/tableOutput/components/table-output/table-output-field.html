@@ -1,0 +1,113 @@
+<dom-module id="table-output-field">
+  <style>
+    :host {
+      display: inline-block;
+      height: 32px;
+      vertical-align: top;
+    }
+    span { padding: 0 8px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box; }
+
+    span { white-space: nowrap; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 32px; line-height: 32px; color: #424242; font-size: 11px; }
+    #text { width: 120px; }
+    #number { width: 100px; }
+    #bool { width: 160px; }
+    #date { width: 100px; }
+    #email { width: 200px; }
+    a { color: #2288bb; }
+    #stars { width: 80px; }
+    .star { width: 12px; height: 24px; color: #C21856; }
+    #children { display: table-row; }
+  </style>
+  <template strip-whitespace data-value$="{{value}}">
+    <template is="dom-repeat" items="{{fields}}"><!--
+      --><table-output-field
+          fields="{{item.fields}}"
+          field="{{arrayItem(field.link.fields, index)}}"
+          value="{{item.value}}"
+          content="{{item.content}}"></table-output-field><!--
+    --></template>
+
+    <!-- don't display hidden field values -->
+    <template is="dom-if" if="{{!equals(field.type, 'hidden')}}">
+
+      <!-- display label -->
+      <template is="dom-if" if="{{!equals(label, '')}}">
+        <span class="label">{{label}}</span>
+      </template>
+
+      <!-- text -->
+      <template is="dom-if" if="{{equals(field.type, 'text')}}">
+        <span id="text">{{content}}</span>
+      </template>
+
+      <!-- number -->
+      <template is="dom-if" if="{{equals(field.type, 'number')}}">
+        <span id="number">{{content}}</span>
+      </template>
+
+      <!-- email -->
+      <template is="dom-if" if="{{equals(field.type, 'email')}}">
+        <span id="email"><a href="mailto: {{value}}">{{content}}</a></span>
+      </template>
+
+      <!-- bool -->
+      <template is="dom-if" if="{{equals(field.type, 'bool')}}">
+        <span id="bool">
+          <template is="dom-if" if="{{equals(content, '1')}}">
+            ja
+          </template>
+          <template is="dom-if" if="{{equals(content, '0')}}">
+            nein
+          </template>
+        </span>
+      </template>
+
+      <!-- date -->
+      <template is="dom-if" if="{{equals(field.type, 'date')}}">
+        <span id="date">{{parseDate(content)}}</span>
+      </template>
+
+      <!-- stars -->
+      <template is="dom-if" if="{{equals(field.type, 'stars')}}">
+        <span id="stars">
+          <template is="dom-repeat" items="{{getStars(content)}}">
+            <iron-icon class="star" icon="icons:star"></iron-icon>
+          </template>
+        </span>
+      </template>
+    </template>
+  </template>
+  <script>
+  Polymer({
+    is: 'table-output-field',
+    properties: {
+      field: {
+        type: Object,
+        notify: true
+      },
+      fields: Array,
+      value: String,
+      content: String,
+      label: String
+    },
+    equals: function(a, b) {
+      return a == b;
+    },
+    getStars: function(stars) {
+      var arr = [];
+      for (var i=0; i<stars; i++) arr.push(i);
+      return arr;
+    },
+    parseDate: function(dateString) {
+      var date = moment(dateString);
+      return date.isValid() ? date.format('DD.MM.YYYY') : "";
+    },
+    arrayItem: function(arr, index) {
+      return arr[index];
+    },
+  });
+  </script>
+</dom-module>

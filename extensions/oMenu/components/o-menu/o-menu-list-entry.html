@@ -1,0 +1,22 @@
+<dom-module id="o-menu-entry">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+    <li data-route="{{route}}" class="{{opened}}"><a href="{{link}}">:title</a><ul>:sub</ul>:btn</li>
+  </template>
+  <script>
+  Polymer({
+    is: 'o-menu-entry',
+    properties: {
+      title: String,
+      route: String,
+      opened: Boolean,
+      link: String,
+      sub: Array
+    }
+  });
+  </script>
+</dom-module>
