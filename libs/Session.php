@@ -3,7 +3,7 @@ class Session {
     public static function init() {
         try {
           @session_start();
-          session_regenerate_id(true);
+          echo "started session";
         } catch (Exception $err) {
           // session error handling
         }
