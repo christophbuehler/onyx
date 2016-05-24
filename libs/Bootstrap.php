@@ -25,6 +25,7 @@ class Bootstrap
 
     // session handling
     session_save_path(getcwd() . '/session');
+    Session::init();
 
     require 'Exceptions.php';
 

@@ -34,8 +34,6 @@ class Controller
     $this->js = [];
     $this->components = [];
     $this->pathPrefix = SITE_PATH;
-    
-    Session::init();
   }
 
   /**
