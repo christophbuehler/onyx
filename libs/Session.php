@@ -5,12 +5,10 @@ class Session {
           session_start();
         } catch (Exception $err) {
           print_r($err);
-          // session error handling
         }
     }
 
     public static function set($key, $value) {
-      echo "setting " . $key;
       $_SESSION[$key] = $value;
     }
 
@@ -24,7 +22,6 @@ class Session {
     }
 
     public static function destroy() {
-      echo "destroy";
-      session_destroy();
+      // session_destroy();
     }
 }
