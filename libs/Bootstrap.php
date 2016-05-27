@@ -91,7 +91,7 @@ class Bootstrap
 
     // if an ajax function has been called
     if ($ajax_call) {
-      Session::close();
+      // Session::close();
       exit;
     }
 
@@ -99,7 +99,7 @@ class Bootstrap
 
     // if an ajax function has been called
     if ($ajax_call) {
-      Session::close();
+      // Session::close();
       exit;
     }
 
@@ -108,7 +108,7 @@ class Bootstrap
     // if no page was found    if ($controller == false) {
       throw new PageLoadException(
       sprintf('Page controller "%s" does not exist.', implode('/', $url)));
-      Session::close();
+      // Session::close();
       exit;
     }
 
@@ -127,7 +127,7 @@ class Bootstrap
     }
 
     $controller->view_page();
-    Session::close();
+    // Session::close();
   }
 
   /**
