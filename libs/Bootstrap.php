@@ -29,7 +29,9 @@ class Bootstrap
 
     echo Session::get('loggedIn');
 
-    Session::set('loggedIn', 'lorem')
+    Session::set('loggedIn', 'lorem');
+
+    return;
 
     require 'Exceptions.php';
 
