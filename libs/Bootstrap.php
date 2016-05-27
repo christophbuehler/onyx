@@ -24,7 +24,7 @@ class Bootstrap
     }
 
     // session handling
-    // session_save_path(getcwd() . '/session');
+    session_save_path(getcwd() . '/session');
     Session::init();
 
     echo Session::get('userName');
