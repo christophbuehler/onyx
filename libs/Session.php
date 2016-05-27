@@ -2,8 +2,9 @@
 class Session {
     public static function init() {
         try {
-          @session_start();
+          session_start();
         } catch (Exception $err) {
+          print_r($err);
           // session error handling
         }
     }
@@ -19,7 +20,7 @@ class Session {
     }
 
     public static function close() {
-      session_write_close();
+      // session_write_close();
     }
 
     public static function destroy() {
