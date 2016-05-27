@@ -29,10 +29,12 @@ class Bootstrap
 
     echo Session::get('loggedIn');
 
+    echo "test";
+
     require 'Exceptions.php';
 
     // smarty
-    include ONYX_REPOSITORY.'libs/smarty/Smarty.class.php';
+    include ONYX_REPOSITORY . 'libs/smarty/Smarty.class.php';
     $this->smarty = new Smarty();
 
     // model
