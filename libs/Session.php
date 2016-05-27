@@ -9,6 +9,7 @@ class Session {
     }
 
     public static function set($key, $value) {
+      echo "setting " . $key . " to " . $value;
       $_SESSION[$key] = $value;
     }
 
