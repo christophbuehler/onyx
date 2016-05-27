@@ -26,13 +26,7 @@ class Bootstrap
     // session handling
     session_save_path(getcwd() . '/session');
     Session::init();
-
-    echo Session::get('loggedIn');
-
-    Session::set('loggedIn', 'lorem');
-
-    return;
-
+    
     require 'Exceptions.php';
 
     // smarty
