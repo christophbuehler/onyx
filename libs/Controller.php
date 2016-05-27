@@ -157,7 +157,7 @@ class Controller
           if (substr($dir, -1) != '/') {
               $dir .= '/';
           }
-          $dir .= 'components/';
+          $dir .= COMPONENT_DIR . '/';
 
           if (!file_exists($dir . COMPONENT_FILE)) continue;
 
