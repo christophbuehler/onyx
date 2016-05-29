@@ -59,9 +59,9 @@ class Controller
 
       // add default css directories
       $this->add_css_dirs([
-          'global/', // global
-          'templates/' . TEMPLATE, // template
-          'views/' . PAGE_PATH, // page
+        'global/', // global
+        'templates/' . TEMPLATE, // template
+        'views/' . PAGE_PATH, // page
       ], true);
 
       // add default JS directories

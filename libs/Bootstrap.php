@@ -25,9 +25,8 @@ class Bootstrap
 
     // session handling
     session_save_path(getcwd() . '/session');
+    ini_set('session.gc_probability', 1);
     Session::init();
-
-    echo Session::get('userName');
 
     require 'Exceptions.php';
 

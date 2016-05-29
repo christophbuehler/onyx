@@ -1,15 +1,14 @@
 <?php
 class Session {
     public static function init() {
-        try {
-          session_start();
-        } catch (Exception $err) {
-          print_r($err);
-        }
+      try {
+        session_start();
+      } catch (Exception $err) {
+        print_r($err);
+      }
     }
 
     public static function set($key, $value) {
-      echo "setting " . $key . " to " . $value;
       $_SESSION[$key] = $value;
     }
 
@@ -19,10 +18,10 @@ class Session {
     }
 
     public static function close() {
-      // session_write_close();
+      session_write_close();
     }
 
     public static function destroy() {
-      // session_destroy();
+      session_destroy();
     }
 }
