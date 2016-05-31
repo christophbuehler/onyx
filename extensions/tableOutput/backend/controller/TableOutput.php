@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * TableOutput is a framework for creating dynamic data tables
+ * out of a MySQL data source.
+ */
 class TableOutput
 {
   private $controller;
@@ -35,11 +39,20 @@ class TableOutput
     $this->rootTable->assign_filters_to_fields($this->renderer);
   }
 
+  /**
+   * Display the TableOutput table.
+   * @return string the table component string
+   */
   public function show()
   {
     return $this->renderer->render_table();
   }
 
+  /**
+   * Get the order by value.
+   * @param  string $orderBy the desired order by field name
+   * @return string          the resulting order by field name
+   */
   public function check_order_by($orderBy)
   {
 
@@ -62,7 +75,7 @@ class TableOutput
 
   /**
   * Set filter values for one particular field.
-  * @param String $fieldName    the field name
+  * @param string $fieldName    the field name
   * @param Array $filterValues  the filter values
   */
   public function set_filter(string $path, array $values): bool
@@ -82,6 +95,13 @@ class TableOutput
     return true;
   }
 
+  /**
+   * Get a TableOutputField object from the relational construction path.
+   * @param  string $path    the path to the field
+   * @param  bool $reverse whether the path is in reverse order
+   * @param  TableOutputTable $table   the table object
+   * @return TableOutputField          the resulting TableOutputField from this path
+   */
   public function get_field_from_path(string $path, $reverse = true, TableOutputTable $table = null): TableOutputField
   {
     $parts = explode('.', $path);
@@ -97,6 +117,13 @@ class TableOutput
     }
   }
 
+  /**
+   * Get the field equivalent from a path of string entities.
+   * @param  string           $path    the path
+   * @param  TableOutputTable $table   the table object
+   * @param  bool           $reverse whether the path is in reverse order or not
+   * @return Array                    an array of TableOutputField items
+   */
   public function path_to_fields(string $path, TableOutputTable $table, bool $reverse = true): array
   {
     $parts = explode('.', $path);
@@ -205,7 +232,7 @@ class TableOutput
     if (!$this->config->allowEdit) {
       throw new Exception('No edit permission.');
     }
-    
+
     $sth = $this->db->prepare($this->queryHandler->update());
 
     $valArr = array(
