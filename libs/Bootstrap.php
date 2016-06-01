@@ -6,7 +6,6 @@
 * The Onyx project is a web-application-framework, designed and optimized
 * for simple usage and programmer efficiency.
 */
-test
 
 class Bootstrap
 {
