@@ -55,7 +55,7 @@ class Bootstrap
     }
 
     // this request did not match any criteria
-    (new PlainResponse(400, $errors))
+    (new JSONResponse(400, $errors))
       ->send();
   }
 
