@@ -88,7 +88,7 @@ class Bootstrap
     self::set_url();
 
     // get extensions
-    self::$extensions = self::$require_extensions();
+    self::$extensions = self::require_extensions();
 
     // define the page path
     self::define_page_path();
