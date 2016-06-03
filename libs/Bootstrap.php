@@ -16,14 +16,14 @@ class Bootstrap
   private $pageController;
   private $indexController;
   private $extensions;
-  
+
   /**
   * Process request.
   */
   public function process()
   {
     $errors = [];
-    this.init();
+    $this->init();
 
     // first of all, fetch ressources
     try {
@@ -81,7 +81,7 @@ class Bootstrap
     $this->reqMethod = strtolower($_SERVER['REQUEST_METHOD']);
 
     // set arguments
-    $this.set_args();
+    $this->set_args();
 
     // set url
     $this->set_url();
