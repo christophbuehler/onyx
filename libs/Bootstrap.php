@@ -96,11 +96,11 @@ class Bootstrap
    */
   private function handle_global_request() {
 
-    // initialize the index controller
-    self::$indexController->init();
-
     // create the index controller
     self::$indexController = new IndexController(self::$smarty, self::$model, self::$url);
+
+    // initialize the index controller
+    self::$indexController->init();
   }
 
   /**
