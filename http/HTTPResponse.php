@@ -1,5 +1,16 @@
 <?php
 
+abstract class Lorem
+{
+
+}
+
+abstract class Ipsum
+{
+  private $a;
+  abstract protected function serialize(): string;
+}
+
 /**
  * Used for handling XHR requests.
  */
@@ -36,7 +47,7 @@ abstract class HTTPResponse
    */
   public function send() {
     http_response_code($this.code);
-    echo $this.serialize();
+    echo $this->serialize();
     exit;
   }
 }
