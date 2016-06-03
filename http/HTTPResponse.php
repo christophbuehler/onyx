@@ -1,18 +1,5 @@
 <?php
 
-abstract class Lorem
-{
-
-}
-
-abstract class Ipsum
-{
-  private $a;
-  abstract protected function serialize(): string;
-}
-
-echo "aaa";
-
 /**
  * Used for handling XHR requests.
  */
@@ -28,7 +15,7 @@ abstract class HTTPResponse
    * @param  integer $code    the HTTP status code
    * @param  string  $content the response body
    */
-  function __constructor($content = '', int $code = 204) {
+  function __construct($content = '', int $code = 204) {
     this.$content = $content;
     this.$code = $code;
   }
