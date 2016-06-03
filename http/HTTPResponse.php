@@ -11,6 +11,8 @@ abstract class Ipsum
   abstract protected function serialize(): string;
 }
 
+echo "aaa";
+
 /**
  * Used for handling XHR requests.
  */
