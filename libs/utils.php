@@ -26,7 +26,7 @@ function call_xhr_method(string $className, string $methodName, array $args = []
   // not the required amount of arguments
   if (count($reqArgs) != count($args)) {
 
-    (new PlainResponse(400, 'Argument count error.'))
+    (new PlainResponse('Argument count error.', 400))
       ->send();
   }
 
@@ -40,13 +40,13 @@ function call_xhr_method(string $className, string $methodName, array $args = []
 
     // exactly one argument with that name has to be passed
     if (count($match) != 1) {
-      (new PlainResponse(400, 'Argument match error.'))
+      (new PlainResponse('Argument match error.', 400))
         ->send();
     }
 
     array_push($sortedArgs, $match[0]);
   }
-  
+
   // call the method
   call_user_func_array([ $className, $methodName ], $sortedArgs)
     ->send();
