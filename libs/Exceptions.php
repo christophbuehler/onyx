@@ -2,12 +2,12 @@
 
 class OnyxException extends Exception
 {
-    function __construct($header, $content) {
-      parent::__construct(sprintf('<!DOCTYPE html><html><title>%s - Error</title><head><link rel="stylesheet" href="global/css/error.css"></head><body><div class="onyx_error_box"><div class="onyx_error_header">%s</div><div class="onyx_error_content">%s</div></div></body></html>',
-        SITE_NAME_SHORT,
-        $header,
-        $content));
-    }
+  function __construct($header, $content) {
+    parent::__construct(sprintf('<!DOCTYPE html><html><title>%s - Error</title><head><link rel="stylesheet" href="global/css/error.css"></head><body><div class="onyx_error_box"><div class="onyx_error_header">%s</div><div class="onyx_error_content">%s</div></div></body></html>',
+      SITE_NAME_SHORT,
+      $header,
+      $content));
+  }
 }
 
 class PageLoadException extends OnyxException
