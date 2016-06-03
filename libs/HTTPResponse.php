@@ -24,14 +24,4 @@ class HTTPResponse
     this.$code = $code;
     return $this;
   }
-
-  /**
-   * Change the status code.
-   * @param  int    $code the HTTP status code
-   * @return HTTPResponse       this
-   */
-  public function with_status(int $code): HTTPResponse {
-    this.$code = $code;
-    return $this;
-  }
 }
