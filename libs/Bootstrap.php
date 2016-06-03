@@ -40,8 +40,6 @@ class Bootstrap
       array_push($errors, $e);
     }
 
-    return;
-
     // handle this page request
     try {
       self::handle_page_request();
@@ -100,10 +98,6 @@ class Bootstrap
 
     // create the index controller
     self::$indexController = new IndexController(self::$smarty, self::$model, self::$url);
-
-    echo "a";
-
-    return;
 
     // initialize the index controller
     self::$indexController->init();

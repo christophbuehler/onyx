@@ -46,7 +46,7 @@ function call_xhr_method(string $className, string $methodName, array $args = []
 
     array_push($sortedArgs, $match[0]);
   }
-
+  
   // call the method
   call_user_func_array([ $className, $methodName ], $sortedArgs)
     ->send();
