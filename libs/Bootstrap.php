@@ -72,13 +72,13 @@ class Bootstrap
 
     // smarty
     include ONYX_REPOSITORY . 'libs/smarty/Smarty.class.php';
-    self::smarty = new Smarty();
+    self::$smarty = new Smarty();
 
     // model
-    self::model = new Model();
+    self::$model = new Model();
 
     // set the request method
-    self::reqMethod = strtolower($_SERVER['REQUEST_METHOD']);
+    self::$reqMethod = strtolower($_SERVER['REQUEST_METHOD']);
 
     // set arguments
     self::set_args();
@@ -87,7 +87,7 @@ class Bootstrap
     self::set_url();
 
     // get extensions
-    self::extensions = self::require_extensions();
+    self::$extensions = self::$require_extensions();
 
     // define the page path
     self::define_page_path();
@@ -99,10 +99,10 @@ class Bootstrap
   private function handle_global_request() {
 
     // initialize the index controller
-    self::indexController->init();
+    self::$indexController->init();
 
     // create the index controller
-    self::indexController = new IndexController(self::smarty, self::model, self::url);
+    self::$indexController = new IndexController(self::$smarty, self::$model, self::$url);
   }
 
   /**
@@ -111,23 +111,23 @@ class Bootstrap
   private function handle_page_request() {
 
     // create the page controller
-    self::pageController = self::get_page_controller();
+    self::$pageController = self::$get_page_controller();
 
     // initialize the page controller
-    self::pageController->init();
+    self::$pageController->init();
 
     // try to call a page ajax function
     self::call_page_ajax_function();
 
     // load this page
-    self::pageController
-      ->add_css_dirs(self::extensions, true)
-      ->add_js_dirs(self::extensions, true)
-      ->add_components(self::extensions)
+    self::$pageController
+      ->add_css_dirs(self::$extensions, true)
+      ->add_js_dirs(self::$extensions, true)
+      ->add_components(self::$extensions)
       ->init_resources();
 
     // view the page
-    self::pageController->view_page();
+    self::$pageController->view_page();
   }
 
   /**
@@ -136,7 +136,7 @@ class Bootstrap
   private function handle_extension_request() {
 
     // create the extension controller
-    self::extensionController = self::get_extension_controller() ;
+    self::$extensionController = self::$get_extension_controller() ;
 
     // try to call an extension ajax function
     self::call_extension_ajax_function();
@@ -154,13 +154,13 @@ class Bootstrap
       str_replace('+', '%2B', $postData) // replace plus sign
     ), true);
 
-    switch (self::reqMethod) {
+    switch (self::$reqMethod) {
       case 'get':
       case 'delete':
-        self::reqArgs = $_GET;
+        self::$reqArgs = $_GET;
         break;
       default:
-        self::reqArgs = $_POST;
+        self::$reqArgs = $_POST;
         break;
     }
   }
@@ -189,7 +189,7 @@ class Bootstrap
     // if url does not exist, set it to MAIN_VIEW
     $urlArr[0] = $urlArr[0] ? $urlArr[0] : MAIN_VIEW;
 
-    self::url = $urlArr;
+    self::$url = $urlArr;
   }
 
   /**
@@ -197,7 +197,7 @@ class Bootstrap
   */
   private function get_resource()
   {
-    $filePath = self::url;
+    $filePath = self::$url;
 
     // check if it is a resource
     $isResource = false;
@@ -230,7 +230,7 @@ class Bootstrap
   {
 
     // try to call a global ajax function
-    return call_xhr_method(self::indexController, compose_ajax_method_name(self::reqMethod, self::url), $params);
+    return call_xhr_method(self::$indexController, compose_ajax_method_name(self::$reqMethod, self::$url), $params);
   }
 
   /**
@@ -242,7 +242,7 @@ class Bootstrap
   {
 
     // try to call a page ajax function
-    call_xhr_method(self::pageController, compose_ajax_method_name(self::reqMethod, self::url), self::reqArgs);
+    call_xhr_method(self::$pageController, compose_ajax_method_name(self::$reqMethod, self::$url), self::$reqArgs);
   }
 
   /**
@@ -254,7 +254,7 @@ class Bootstrap
   {
 
     // try to call an extension ajax function
-    call_xhr_method(self::extensionController, compose_ajax_method_name(self::reqMethod, self::url), self::reqArgs);
+    call_xhr_method(self::$extensionController, compose_ajax_method_name(self::$reqMethod, self::$url), self::$reqArgs);
   }
 
   /**
@@ -262,7 +262,7 @@ class Bootstrap
   */
   public function get_page_controller()
   {
-    $url = self::url;
+    $url = self::$url;
 
     // Set root directory
     $pagePath = 'views/' . $url[0];
@@ -277,7 +277,7 @@ class Bootstrap
     $controllerName .= 'Controller';
 
     require_once $pagePath . '/' . $controllerName . '.php';
-    return new $controllerName(self::smarty, self::model, $url, self::indexController);
+    return new $controllerName(self::$smarty, self::$model, $url, self::$indexController);
   }
 
   /**
@@ -287,10 +287,10 @@ class Bootstrap
   {
 
     // set the controller name
-    $controllerName = ucfirst(self::url[0]) . 'Controller';
+    $controllerName = ucfirst(self::$url[0]) . 'Controller';
 
     require_once $pagePath . '/' . $controllerName . '.php';
-    return new $controllerName(self::model->db);
+    return new $controllerName(self::$model->db);
   }
 
   /**
@@ -298,10 +298,10 @@ class Bootstrap
    */
   private function set_smarty_vars()
   {
-    self::smarty->assign('pageName', self::url[ count(self::url) - 1] );
-    self::smarty->assign('siteName', SITE_NAME);
-    self::smarty->assign('domain', DOMAIN);
-    self::smarty->assign('siteNameShort', SITE_NAME_SHORT);
+    self::$smarty->assign('pageName', self::$url[ count(self::$url) - 1] );
+    self::$smarty->assign('siteName', SITE_NAME);
+    self::$smarty->assign('domain', DOMAIN);
+    self::$smarty->assign('siteNameShort', SITE_NAME_SHORT);
   }
 
   /**
