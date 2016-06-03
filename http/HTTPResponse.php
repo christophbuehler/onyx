@@ -5,8 +5,8 @@
  */
 abstract class HTTPResponse
 {
-  protected static $content;
-  protected static $code;
+  public $content;
+  public $code;
 
   abstract protected function serialize(): string;
 
@@ -16,8 +16,6 @@ abstract class HTTPResponse
    * @param  string  $content the response body
    */
   function __construct($content = '', int $code = 204) {
-    echo "test" . $content;
-    echo "test" . $code;
     $this->content = $content;
     $this->code = $code;
   }
