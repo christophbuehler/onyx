@@ -74,4 +74,4 @@ function utf8_urldecode($str): string
   return html_entity_decode($str, null, 'UTF-8');
 }
 
-function 
+function
