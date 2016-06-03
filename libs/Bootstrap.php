@@ -33,14 +33,14 @@ class Bootstrap
       array_push($errors, $e);
     }
 
-    return;
-
     // handle this global request
     try {
       self::handle_global_request();
     } catch(Exception $e) {
       array_push($errors, $e);
     }
+
+    return;
 
     // handle this page request
     try {
