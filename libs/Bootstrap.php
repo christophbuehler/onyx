@@ -17,7 +17,7 @@ class Bootstrap
   private static $indexController;
   private static $extensions;
   private static $model;
-  
+
   /**
   * Process request.
   */
@@ -150,8 +150,8 @@ class Bootstrap
 
     // fix post data encoding
     $postData = json_encode($_POST);
-
-    $_POST = json_decode($utf8_urldecode(
+    
+    $_POST = json_decode(utf8_urldecode(
       str_replace('+', '%2B', $postData) // replace plus sign
     ), true);
 
