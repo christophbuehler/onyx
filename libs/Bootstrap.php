@@ -7,7 +7,7 @@
 * for simple usage and programmer efficiency.
 */
 
-static class Bootstrap
+class Bootstrap
 {
   private $smarty;
   private $reqArgs = [];
