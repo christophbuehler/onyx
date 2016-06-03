@@ -63,12 +63,6 @@ class Bootstrap
    */
   private function init() {
 
-    // error handling
-    if (DEBUG_OUTPUT == 'true') {
-      error_reporting(-1);
-      ini_set('display_errors', 'On');
-    }
-
     // session handling
     session_save_path(getcwd() . '/session');
     ini_set('session.gc_probability', 1);
