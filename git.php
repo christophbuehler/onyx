@@ -1,1 +1,3 @@
-<?php `git pull`;
+<?php
+`git reset --hard HEAD`;
+`git pull`;
