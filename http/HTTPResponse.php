@@ -26,16 +26,15 @@ abstract class HTTPResponse
    * @return HTTPResponse       this
    */
   public function with_status(int $code): HTTPResponse {
-    this.$code = $code;
+    $this->code = $code;
     return $this;
   }
 
   /**
    * Send this HTTP response.
-   * @return [type] [description]
    */
   public function send() {
-    http_response_code($this.code);
+    http_response_code($this->code);
     echo $this->serialize();
     exit;
   }
