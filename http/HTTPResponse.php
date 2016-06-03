@@ -15,7 +15,7 @@ abstract class HTTPResponse
    * @param  integer $code    the HTTP status code
    * @param  string  $content the response body
    */
-  function __construct($content = '', int $code = 204) {
+  function __construct($content = "", int $code = 204) {
     $this->content = $content;
     $this->code = $code;
   }
