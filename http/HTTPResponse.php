@@ -5,8 +5,8 @@
  */
 abstract class HTTPResponse
 {
-  private $content;
-  private $code;
+  protected static $content;
+  protected static $code;
 
   abstract protected function serialize(): string;
 
