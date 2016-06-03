@@ -16,7 +16,8 @@ class Bootstrap
   private static $pageController;
   private static $indexController;
   private static $extensions;
-
+  private static $model;
+  
   /**
   * Process request.
   */
