@@ -1,4 +1,0 @@
-/* Base formatting of website errors */
-.onyx_error_box { margin: 10px auto; font-size: 14px; width: 960px; font-family: 'Arial'; }
-.onyx_error_header { font-weight: bold; text-align: center; color: red; height: 40px; line-height: 40px; background: #eee; }
-.onyx_error_content { height: 400px; padding: 16px; color: #222; }

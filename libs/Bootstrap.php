@@ -7,15 +7,61 @@
 * for simple usage and programmer efficiency.
 */
 
-class Bootstrap
+static class Bootstrap
 {
   private $smarty;
+  private $reqArgs = [];
+  private $url = [];
+  private $reqMethod;
+  private $pageController;
+  private $indexController;
+  private $extensions;
 
   /**
-  * Bootstrap constructor.
+  * Process request.
   */
-  public function __construct()
+  public function process()
   {
+    $errors = [];
+    this.init();
+
+    // first of all, fetch ressources
+    try {
+      $this->get_resource();
+    } catch(Exception $e) {
+      array_push($errors, $e);
+    }
+
+    // handle this global request
+    try {
+      $this->handle_global_request();
+    } catch(Exception $e) {
+      array_push($errors, $e);
+    }
+
+    // handle this page request
+    try {
+      $this->handle_page_request();
+    } catch(Exception $e) {
+      array_push($errors, $e);
+    }
+
+    // handle this extension requst
+    try {
+      $this->handle_extension_request();
+    } catch(Exception $e) {
+      array_push($errors, $e);
+    }
+
+    // this request did not match any criteria
+    (new PlainResponse(400, $errors))
+      ->send();
+  }
+
+  /**
+   * Initialize components.
+   */
+  private function init() {
 
     // error handling
     if (DEBUG_OUTPUT == 'true') {
@@ -37,116 +83,128 @@ class Bootstrap
     // model
     $this->model = new Model();
 
+    // set the request method
+    $this->reqMethod = strtolower($_SERVER['REQUEST_METHOD']);
+
+    // set arguments
+    $this.set_args();
+
+    // set url
+    $this->set_url();
+
+    // get extensions
+    $this->extensions = $this->require_extensions();
+
+    // define the page path
+    $this->define_page_path();
+  }
+
+  /**
+   * Handle a global request.
+   */
+  private function handle_global_request() {
+
+    // initialize the index controller
+    $this->indexController->init();
+
+    // create the index controller
+    $this->indexController = new IndexController($this->smarty, $this->model, $this->url);
+  }
+
+  /**
+   * Handle a page request.
+   */
+  private function handle_page_request() {
+
+    // create the page controller
+    $this->pageController = $this->get_page_controller();
+
+    // initialize the page controller
+    $this->pageController->init();
+
+    // try to call a page ajax function
+    $this->call_page_ajax_function();
+
+    // load this page
+    $this->pageController
+      ->add_css_dirs($this->extensions, true)
+      ->add_js_dirs($this->extensions, true)
+      ->add_components($this->extensions)
+      ->init_resources();
+
+    // view the page
+    $this->pageController->view_page();
+  }
+
+  /**
+   * Handle an extension request.
+   */
+  private function handle_extension_request() {
+
+    // create the extension controller
+    $this->extensionController = $this->get_extension_controller() ;
+
+    // try to call an extension ajax function
+    $this->call_extension_ajax_function();
+  }
+
+  /**
+   * Set the request arguments.
+   */
+  private function set_args() {
+
+    // fix post data encoding
+    $postData = json_encode($_POST);
+
+    $_POST = json_decode($utf8_urldecode(
+      str_replace('+', '%2B', $postData) // replace plus sign
+    ), true);
+
+    switch ($this->reqMethod) {
+      case 'get':
+      case 'delete':
+        $this->reqArgs = $_GET;
+        break;
+      default:
+        $this->reqArgs = $_POST;
+        break;
+    }
+  }
+
+  /**
+   * Set the request url parts.
+   */
+  private function set_url() {
+
     // url parts
     $url = isset($_GET['url']) ? $_GET['url'] : null;
 
-    // get resource (images, videos, etc)
-    try {
-      $res = $this->get_resource($url);
-    } catch(Exception $e) {
-      echo $e;
-      return;
-    }
-
-    if ($res) {
-      // it was just a resource.. get over it
-      exit;
-    }
-
     // capitalize every letter after dash or space
-    $url = preg_replace_callback('/(?<=( |-))./', function ($m) { return strtoupper($m[0]); }, $url);
+    $url = preg_replace_callback('/(?<=( |-))./', function($m) { return strtoupper($m[0]); }, $url);
 
     // remove dashes and spaces
     $url = str_replace('-', '', str_replace(' ', '', $url));
 
     // url segments
     $url = rtrim($url, '/');
+
     define('URL', $url);
-    $url = explode('/', $url);
 
-    // initialize extensions
-    $extensions = $this->require_extensions();
-
-    // fix param encoding
-    $postData = json_encode($_POST);
-
-    $_POST = json_decode($this->utf8_urldecode(
-      str_replace('+', '%2B', $postData) // replace plus sign
-    ), true);
+    $urlArr = explode('/', $url);
 
     // if url does not exist, set it to MAIN_VIEW
-    $url[0] = ($url[0]) ? $url[0] : MAIN_VIEW;
+    $urlArr[0] = $urlArr[0] ? $urlArr[0] : MAIN_VIEW;
 
-    $this->indexController = new IndexController($this->smarty, $this->model, $url);
-
-    $path = '';
-    foreach ($url as $pathPart) {
-      $path = $path.$pathPart.'/';
-    }
-
-    define('PAGE_PATH', $path);
-
-    $ajax_call = $this->call_page_ajax_function($url);
-
-    // if an ajax function has been called
-    if ($ajax_call) {
-      // Session::close();
-      exit;
-    }
-
-    $ajax_call = $this->call_extension_ajax_function($url);
-
-    // if an ajax function has been called
-    if ($ajax_call) {
-      // Session::close();
-      exit;
-    }
-
-    $controller = $this->get_page_controller($url);
-
-    // if no page was found    if ($controller == false) {
-      throw new PageLoadException(
-      sprintf('Page controller "%s" does not exist.', implode('/', $url)));
-      // Session::close();
-      exit;
-    }
-
-    try {
-      $controller
-        ->add_css_dirs($extensions, true)
-        ->add_js_dirs($extensions, true)
-        ->add_components($extensions)
-        ->init_resources();
-
-      $this->indexController->init();
-      $controller->init();
-    } catch(Exception $e) {
-      echo $e->getMessage();
-      return;
-    }
-
-    $controller->view_page();
-    // Session::close();
-  }
-
-  /**
-  * Converts a string to a valid url.
-  * @param  string $str the string
-  * @return string      the formatted url
-  */
-  public function utf8_urldecode($str)
-  {
-    $str = preg_replace('/%u([0-9a-f]{3,4})/i', '&#x\\1;', urldecode($str));
-    return html_entity_decode($str, null, 'UTF-8');
+    $this->url = $urlArr;
   }
 
   /**
   * Get the requested resource.
-  * @param  string $url the resource url
-  * @return bool        whether it was a valid resource or not
   */
-  private function get_resource($filePath)
+  private function get_resource()
   {
+    $filePath = $this->url;
+
     // check if it is a resource
     $isResource = false;
     $fileEnding = pathinfo($filePath, PATHINFO_EXTENSION);
@@ -161,17 +219,24 @@ class Bootstrap
     }
 
     // no valid resource
-    if (!$isResource) {
-      return false;
-    }
+    if (!$isResource) return false;
+
+    // this is a valid resource file type
 
     if (file_exists($filePath)) {
       header('Location: ' . $filePath);
-      return true;
+      exit;
     }
 
     throw new PageLoadException(
-    sprintf('Resource "%s" could not be found.', $filePath));
+      sprintf('Resource "%s" could not be found.', $filePath));
+  }
+
+  private function call_global_ajax_function()
+  {
+
+    // try to call a global ajax function
+    return call_xhr_method($this->indexController, compose_ajax_method_name($this->reqMethod, $this->url), $params);
   }
 
   /**
@@ -179,45 +244,11 @@ class Bootstrap
   * @param  string $url the page ajax function url
   * @return string      whether a page ajax function could be called
   */
-  private function call_page_ajax_function($url)
+  private function call_page_ajax_function()
   {
-    $reqMethod = strtolower($_SERVER['REQUEST_METHOD']);
 
-    $funcName = $reqMethod . '_' . $url[count($url) - 1];
-    unset($url[count($url) - 1]);
-
-    switch ($reqMethod) {
-      case 'get':
-      case 'delete':
-        $params = [ $_GET ];
-        break;
-      default:
-        $params = [ $_POST ];
-        break;
-    }
-
-    if (count($url) == 0) {
-      if (!method_exists($this->indexController, REMOTE_FUNCTION_START . $funcName)) {
-        return false;
-      }
-
-      $this->define_global_page_constants();
-      echo json_encode(call_user_func_array(array($this->indexController, REMOTE_FUNCTION_START . $funcName), $params));
-      return true;
-    }
-
-    $pageController = $this->get_page_controller($url);
-
-    if (!$pageController) {
-      return false;
-    }
-
-    if (!method_exists($pageController, REMOTE_FUNCTION_START . $funcName)) {
-      return false;
-    }
-
-    echo json_encode(call_user_func_array(array($pageController, REMOTE_FUNCTION_START . $funcName), $params));
-    return true;
+    // try to call a page ajax function
+    call_xhr_method($this->pageController, compose_ajax_method_name($this->reqMethod, $this->url), $this->reqArgs);
   }
 
   /**
@@ -227,77 +258,56 @@ class Bootstrap
   */
   public function call_extension_ajax_function($url)
   {
-    $pagePath = ONYX_REPOSITORY . 'extensions/' . $url[0];
 
-    if (count($url) != 2) {
-      return false;
-    }
-
-    $controllerName = ucfirst($url[0]);
-    $controllerName .= 'Controller';
-
-    if (!file_exists($pagePath . '/' . $controllerName . '.php')) {
-      return false;
-    }
-
-    require_once $pagePath . '/' . $controllerName . '.php';
-    $extensionController = new $controllerName($this->model->db);
-
-    if (method_exists($extensionController, REMOTE_FUNCTION_START.$url[1])) {
-      $params = explode(',', (isset($_GET['p']) ? $_GET['p'] : ''));
-      $this->define_global_page_constants();
-      $this->indexController->init();
-      echo json_encode(call_user_func_array(array($extensionController, REMOTE_FUNCTION_START.$url[1]), $params));
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-  * Define page constants for when the request does not apply to a specific page.
-  * This is the case in index controller and extension requests.
-  * @return void
-  */
-  private function define_global_page_constants()
-  {
-    // define('PAGE_NAME', '');
-    // define('TEMPLATE', '');
+    // try to call an extension ajax function
+    call_xhr_method($this->extensionController, compose_ajax_method_name($this->reqMethod, $this->url), $this->reqArgs);
   }
 
   /**
   * Get the page controller of a page.
-  * @param  string $url the page url
-  * @return object      the page controller, if it was found
   */
-  public function get_page_controller($url)
+  public function get_page_controller()
   {
+    $url = $this->url;
+
     // Set root directory
     $pagePath = 'views/' . $url[0];
     $controllerName = ucfirst($url[0]);
 
+    // loop the url parts and compose the final controller name
     for ($i = 1; $i < count($url); ++$i) {
-      $pagePath = $pagePath.'/'.$url[$i];
+      $pagePath = $pagePath . '/' . $url[$i];
       $controllerName .= ucfirst($url[$i]);
     }
 
-    if (!file_exists($pagePath . '/index.tpl')) {
-      return false;
-    }
+    $controllerName .= 'Controller';
 
-    $this->smarty->assign('pageName', $url[count($url) - 1]);
+    require_once $pagePath . '/' . $controllerName . '.php';
+    return new $controllerName($this->smarty, $this->model, $url, $this->indexController);
+  }
+
+  /**
+   * Get the targeted extension controller.
+   */
+  public function get_extension_controller()
+  {
+
+    // set the controller name
+    $controllerName = ucfirst($this->url[0]) . 'Controller';
+
+    require_once $pagePath . '/' . $controllerName . '.php';
+    return new $controllerName($this->model->db);
+  }
+
+  /**
+   * Set smarty variables.
+   */
+  private function set_smarty_vars()
+  {
+    $this->smarty->assign('pageName', $this->url[ count($this->url) - 1] );
     $this->smarty->assign('siteName', SITE_NAME);
     $this->smarty->assign('domain', DOMAIN);
     $this->smarty->assign('siteNameShort', SITE_NAME_SHORT);
-
-    if (!defined('PAGE_NAME'))
-      define('PAGE_NAME', $url[0]);
-
-    $controllerName .= 'Controller';
-    require $pagePath . '/' . $controllerName . '.php';
-
-    // controls for page render
-    return new $controllerName($this->smarty, $this->model, $url, $this->indexController);
   }
 
   /**
