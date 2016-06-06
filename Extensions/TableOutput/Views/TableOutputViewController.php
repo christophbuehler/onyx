@@ -7,10 +7,11 @@
  * for simple usage and programmer efficiency.
  */
 
-namespace Onyx\Extensions\TableOutput\Controllers;
+namespace Onyx\Extensions\TableOutput\Views;
 
 use Exception;
 use Onyx\DataProviders\PDODatabase;
+use Onyx\Extensions\TableOutput\Controllers\TableOutputController;
 use Onyx\Extensions\TableOutput\Exceptions\SQLException;
 use Onyx\Extensions\TableOutput\TableOutput;
 use Onyx\Http\JSONResponse;
@@ -135,7 +136,7 @@ class TableOutputViewController extends Controller
         $tableOutput = $this->tableOutputController->get_table_by_id($id);
         return new PlainResponse($tableOutput->edit($rowId, $values));
     }
-    
+
     /**
      * Get link endpoint.
      * @param string $id

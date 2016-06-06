@@ -22,8 +22,3 @@ class Utils
     return html_entity_decode($str, null, 'UTF-8');
   }
 }
-
-
-
-
-
