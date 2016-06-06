@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
+ */
+
 namespace Onyx\Extensions\TableOutput\Models;
 
 use Exception;
@@ -24,15 +31,14 @@ class TableOutputTable
 
     /**
      * TableOutputTable constructor.
-     * @param  string $name the table name
-     * @param  string $id the table id
-     * @param  array $fields the fields
+     * @param array $args
+     * @param TableOutput $tableOutput
+     * @throws Exception
      */
     public function __construct(array $args, TableOutput $tableOutput)
     {
-        if (!isset($args['name'])) {
-            throw new Exception('name');
-        }
+        if (!isset($args['name']))
+            throw new Exception('The argument "name" was not provided.');
 
         $this->tableOutput = $tableOutput;
         $this->name = $args['name'];
@@ -49,14 +55,14 @@ class TableOutputTable
 
     /**
      * Recursively assign filters to table fields.
-     *
-     * @param TableOutputRenderer $renderer the table output renderer
-     *
+     * @param TableOutputRenderer $renderer
      * @return bool
+     * @throws Exception
      */
     public function assign_filters_to_fields(TableOutputRenderer $renderer)
     {
-        if (!$this->didAssignMetas) throw new Exception('Can\'t assign filters to fields before metas were assigned.');
+        if (!$this->didAssignMetas)
+            throw new Exception('Can\'t assign filters to fields before metas were assigned.');
 
         foreach ($this->fields as $field) {
             if ($field->independent) continue;
@@ -73,49 +79,50 @@ class TableOutputTable
                 throw new Exception(sprintf('No field type assigned to %s', $field->name));
             }
 
-            // The field already has a filter.
-            // This is the case, when the table-output
-            // object was created from a session.
-            // if (isset($field->filter)) continue;
             $field->filter = $renderer->create_filter($field);
         }
 
         return true;
     }
 
+    /**
+     * Get all the field paths of this table.
+     * @param string $root
+     * @return array
+     */
     public function get_paths($root = ''): array
     {
         $paths = [];
-        foreach ($this->fields as $field) {
+        foreach ($this->fields as $field)
             $paths = array_merge($paths, $field->get_paths($root));
-        }
+
         return $paths;
     }
 
     /**
      * Assign metas to fields.
-     *
-     * @return void
+     * @throws Exception
      */
     private function assign_metas()
     {
-        // loop fields
-        foreach ($this->fields as $field) {
-
-            // get the field type
+        foreach ($this->fields as $field)
             $this->get_field_type_meta($field);
-        }
     }
 
     /**
      * Returns the query for link metas.
      * @return String the query
      */
-    private function compose_meta_query()
+    private function compose_meta_query(): string
     {
-        return sprintf('SELECT %s FROM %s LIMIT 1', implode($this->get_field_names(), ','), $this->name);
+        return sprintf('SELECT %s FROM %s LIMIT 1',
+            implode($this->get_field_names(), ','), $this->name);
     }
 
+    /**
+     * Get an array of this tables' field names.
+     * @return array
+     */
     public function get_field_names(): array
     {
         $fieldNames = [];
@@ -126,6 +133,9 @@ class TableOutputTable
         return $fieldNames;
     }
 
+    /**
+     * Assign the TableOutput query.
+     */
     private function assign_query()
     {
         $predefined = [];
@@ -152,10 +162,11 @@ class TableOutputTable
 
     /**
      * Get the database field type of a field.
-     * @param  Object $field the field object
-     * @return String        the field type
+     * @param $field
+     * @return bool
+     * @throws Exception
      */
-    public function get_field_type_meta($field)
+    public function get_field_type_meta($field): bool
     {
         if (!$this->didAssignMetas) throw new Exception('Can\'t assign field types to fields before metas were assigned.');
 
@@ -179,8 +190,8 @@ class TableOutputTable
 
     /**
      * Assign table-output fields.
-     * @param  array $fields the fields
-     * @return void
+     * @param $fields
+     * @throws Exception
      */
     private function assign_fields($fields)
     {
@@ -192,6 +203,11 @@ class TableOutputTable
         }
     }
 
+    /**
+     * Check if a field name was already taken.
+     * @param string $name
+     * @return bool
+     */
     public function field_name_exists(string $name): bool
     {
         foreach ($this->fields as $field)
@@ -199,36 +215,47 @@ class TableOutputTable
         return false;
     }
 
-    public function get_concat_id()
+    /**
+     * Get the id for SQL concat expressions.
+     * @return string
+     */
+    public function get_concat_id(): string
     {
         return str_replace(',', ',\',\',', $this->id);
     }
 
+    /**
+     * Get a child field by its name.
+     * @param string $name
+     * @return TableOutputField
+     * @throws Exception
+     */
     public function get_field_by_name(string $name): TableOutputField
     {
-        foreach ($this->fields as $field) {
+        foreach ($this->fields as $field)
             if ($field->name == $name) return $field;
-        }
 
         throw new Exception(sprintf('Field could not be found: %s', $name));
     }
 
     /**
-     * Get the table-output field type from native SQL.
-     * @param  String $type the SQL type
-     * @return String       the table-output type
+     * Get the TableOutput field type from native SQL.
+     * @param $type
+     * @return int|string
+     * @throws Exception
      */
-    function get_table_output_type($type)
+    function get_table_output_type($type): string
     {
-        foreach (TABLE_OUTPUT_TYPES as $key => $tableOutputType) {
+        foreach (TABLE_OUTPUT_TYPES as $key => $tableOutputType)
             if (in_array($type, $tableOutputType)) return $key;
-        }
+
         throw new Exception(sprintf('The native field type %s was not defined as a table-output-type in the configuration file.', $type));
     }
 
     /**
      * Get the column metas of the main table.
-     * @return array a list of column metas
+     * @return array
+     * @throws SQLException
      */
     private function get_metas(): array
     {

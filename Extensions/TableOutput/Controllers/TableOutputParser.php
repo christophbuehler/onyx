@@ -99,7 +99,7 @@ class TableOutputParser
         if (filter_var($linkVal, FILTER_VALIDATE_EMAIL)) {
             return '<a href="mailto: ' . $linkVal . '">' . $linkVal . '</a>';
         }
-        
+
         // it's a valid url
         if (preg_match('/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/', $linkVal)) {
             return '<a href="' . $linkVal . '">' . $linkVal . '</a>';
@@ -126,20 +126,20 @@ class TableOutputParser
             throw new Exception(sprintf('No link could be found for the field: %s', $field->name));
         }
 
-        $sth = $this->tableOutput->db->prepare($this->tableOutput->queryHandler->select_autocomplete($field->link, $val));
+        $sth = $this->tableOutput->db->prepare($this->tableOutput->queryHandler->select_auto_complete($field->link, $val));
         if (!$sth->execute((new TableOutputFilterHandler($field->link))->get_values()))
-            throw new Exception('Could not get link autocomplete.');
+            throw new Exception('Could not get link auto complete.');
 
         while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
             array_push($links, (new TableOutputRow($row[$field->link->idAlias], $row, $field->link->fields, $tableOutput->parser))
-                ->parse_autocomplete());
+                ->parse_auto_complete());
         }
 
         return new $links;
     }
 
     /**
-     * Get reverse autocomplete value for a given identifier.
+     * Get reverse auto complete value for a given identifier.
      * @param TableOutputField $field
      * @param $id
      * @return string
@@ -152,7 +152,7 @@ class TableOutputParser
             throw new Exception(sprintf('No link could be found for the field: %s', $field->name));
         }
 
-        return $this->tableOutput->queryHandler->get_reverse_autocomplete($field->link, $id);
+        return $this->tableOutput->queryHandler->get_reverse_auto_complete($field->link, $id);
     }
 }
 

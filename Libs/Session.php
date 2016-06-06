@@ -14,6 +14,9 @@ use Onyx\Http\PlainResponse;
 
 class Session
 {
+    /**
+     * Initialize this session.
+     */
     public static function init()
     {
       session_save_path(getcwd() . '/Onyx/sessions');
@@ -26,22 +29,38 @@ class Session
       }
     }
 
+    /**
+     * Set a session value.
+     * @param $key
+     * @param $value
+     */
     public static function set($key, $value)
     {
       $_SESSION[$key] = $value;
     }
 
+    /**
+     * Get a session value.
+     * @param $key
+     * @return mixed
+     */
     public static function get($key)
     {
       if (isset($_SESSION[$key]))
         return $_SESSION[$key];
     }
 
+    /**
+     * Close this session.
+     */
     public static function close()
     {
       session_write_close();
     }
 
+    /**
+     * Destroy this session.
+     */
     public static function destroy()
     {
       session_destroy();

@@ -18,10 +18,7 @@ class User
   /**
    * User constructor.
    */
-  function __construct()
-  {
-
-  }
+  function __construct() { }
 
   /**
    * @param int $id

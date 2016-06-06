@@ -9,15 +9,15 @@
 
 namespace Onyx\Extensions\TableOutput\Models\Filters;
 
-class TableOutputStringFilter extends TableOutputFilter
+class TableOutputDateFilter extends TableOutputFilter
 {
-    public $includes = [
-        'header' => TABLE_OUTPUT_FILTER_STRING_CONTAINS,
+    public $from = array(
+        'header' => TABLE_OUTPUT_FILTER_DATE_FROM,
         'value' => '',
-    ];
+    );
 
-    public $excludes = array(
-        'header' => TABLE_OUTPUT_FILTER_STRING_CONTAINS_NOT,
+    public $to = array(
+        'header' => TABLE_OUTPUT_FILTER_DATE_TILL,
         'value' => '',
     );
 
@@ -28,11 +28,11 @@ class TableOutputStringFilter extends TableOutputFilter
     public function get(): array
     {
         return array(
-            'includes' => $this->includes,
-            'excludes' => $this->excludes,
+            'from' => $this->from,
+            'to' => $this->to,
         );
     }
-    
+
     /**
      * Get this filter values.
      * @return array
@@ -41,12 +41,12 @@ class TableOutputStringFilter extends TableOutputFilter
     {
         $arr = array();
 
-        if (trim($this->includes['value']) != '') {
-            $arr['includes'] = '%' . $this->includes['value'] . '%';
+        if (trim($this->from['value']) != '') {
+            $arr['from'] = $this->from['value'];
         }
 
-        if (trim($this->excludes['value']) != '') {
-            $arr['excludes'] = '%' . $this->excludes['value'] . '%';
+        if (trim($this->to['value']) != '') {
+            $arr['to'] = $this->to['value'];
         }
 
         return $arr;
@@ -61,15 +61,15 @@ class TableOutputStringFilter extends TableOutputFilter
     {
         $arr = [];
 
-        if (trim($this->includes['value']) != '') {
+        if (trim($this->from['value']) != '') {
             array_push($arr,
-                sprintf('%s LIKE :%s', $this->field->name, 'includes_' . $fieldPath)
+                sprintf('%s >= :%s', $this->field->name, 'from_' . $fieldPath)
             );
         }
 
-        if (trim($this->excludes['value']) != '') {
+        if (trim($this->to['value']) != '') {
             array_push($arr,
-                sprintf('%s NOT LIKE :%s', $this->field->name, 'excludes_' . $fieldPath)
+                sprintf('%s <= :%s', $this->field->name, 'to_' . $fieldPath)
             );
         }
 

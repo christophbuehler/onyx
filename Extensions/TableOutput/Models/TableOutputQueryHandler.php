@@ -1,8 +1,16 @@
 <?php
 
+/**
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
+ */
+
 namespace Onyx\Extensions\TableOutput\Models;
 
 use Onyx\Extensions\TableOutput\Exceptions\SQLException;
+use Onyx\Extensions\TableOutput\Models\Filters\TableOutputStringFilter;
 use Onyx\Extensions\TableOutput\TableOutput;
 
 class TableOutputQueryHandler
@@ -44,23 +52,23 @@ class TableOutputQueryHandler
     }
 
     /**
-     * Compose a SELECT query for autocompletion.
-     * @param  TableOutputLinkTable $link the link table from which to autocomplete
-     * @param  string $autocompleteValue the value, on which the autocompletion is based
-     * @return string the select autocomplete query
+     * Compose a SELECT query for auto completion.
+     * @param  TableOutputLinkTable $link the link table from which to auto_complete
+     * @param  string $auto_completeValue the value, on which the auto completion is based
+     * @return string the select auto complete query
      */
-    public function select_autocomplete(TableOutputLinkTable $link, string $autocompleteValue = ''): string
+    public function select_auto_complete(TableOutputLinkTable $link, string $autoCompleteValue = ''): string
     {
         return sprintf('SELECT %s FROM %s WHERE CONCAT(%s) IN (%s) %s LIMIT %s',
             $this->get_field_string($link),
             $link->name,
             $link->get_concat_id(),
             $link->query,
-            $this->filter($link, $autocompleteValue != '', $autocompleteValue),
-            $link->autocompleteLimit);
+            $this->filter($link, $autoCompleteValue != '', $autoCompleteValue),
+            $link->autoCompleteLimit);
     }
 
-    public function get_reverse_autocomplete(TableOutputLinkTable $link, $id = '')
+    public function get_reverse_auto_complete(TableOutputLinkTable $link, $id = '')
     {
         $contents = [];
         $fieldPaths = $link->get_paths();
@@ -87,7 +95,7 @@ class TableOutputQueryHandler
                 ':p' => $id,
             ))
             ) {
-                throw new SQLException('Could not get link autocomplete.', $sth);
+                throw new SQLException('Could not get link auto complete.', $sth);
             }
 
             $txt = $sth->fetch()['text'];
@@ -101,6 +109,7 @@ class TableOutputQueryHandler
      * Compose the order by query.
      * @param  string $orderBy the order by definition
      * @param  bool $orderByReversed whether order by is reversed
+     * @return string
      */
     private function generate_order_by(string $orderBy, bool $orderByReversed = false): string
     {
@@ -126,40 +135,46 @@ class TableOutputQueryHandler
 
     /**
      * Compose the filter query.
-     * @param  TableOutputTable $table the table
-     * @param  boolean $isAutocomplete whether this is an autocomplete query
-     * @param  string $autocompleteValue the autocomplete value
-     * @return [type]                              the filter query
+     * @param TableOutputTable $table
+     * @param bool $isAutoComplete
+     * @param string $autoCompleteValue
+     * @return string
      */
-    private function filter(TableOutputTable $table, bool $isAutocomplete = false, string $autocompleteValue = ''): string
+    private function filter(TableOutputTable $table, bool $isAutoComplete = false, string $autoCompleteValue = ''): string
     {
         $filter = '';
         $fieldPaths = $table->get_paths();
         $first = true;
 
         foreach ($fieldPaths as $path) {
-            $current = $this->get_filter_from_path($path, $table, $isAutocomplete, $autocompleteValue);
+            $current = $this->get_filter_from_path($path, $table, $isAutoComplete, $autoCompleteValue);
             if ($current == '') continue;
             $filter .= sprintf('%s%s',
-                $first ? '' : ($isAutocomplete ? ' OR ' : ' AND '),
+                $first ? '' : ($isAutoComplete ? ' OR ' : ' AND '),
                 $current);
 
             $first = false;
         }
 
         if ($filter == '') return '';
-        if ($isAutocomplete) return sprintf(' AND (%s)', $filter);
+        if ($isAutoComplete) return sprintf(' AND (%s)', $filter);
 
         return ' ' . $filter;
     }
 
-    private function get_filter_from_path(string $path, TableOutputTable $table, bool $isAutocomplete = false, string $autocompleteValue = ''): string
+    /**
+     * Get the filter from a path.
+     * @param string $path
+     * @param TableOutputTable $table
+     * @param bool $isAutoComplete
+     * @param string $autoCompleteValue
+     * @return string
+     */
+    private function get_filter_from_path(string $path, TableOutputTable $table, bool $isAutoComplete = false, string $autoCompleteValue = ''): string
     {
         $fields = $this->tableOutput->path_to_fields($path, $table, false);
 
         $s = sprintf('%s IN (:q)', $fields[0]['field']->name);
-
-        $parts = array_reverse(explode('.', $path));
 
         for ($i = 1; $i < count($fields) - 1; $i++) {
             $s = str_replace(':q', sprintf('SELECT %s FROM %s WHERE %s IN (:q)',
@@ -170,11 +185,11 @@ class TableOutputQueryHandler
         $last = $fields[count($fields) - 1];
 
         // this specific filter does not exist or is not applied
-        if (!isset($last['field']->filter) || !$last['field']->filter->isApplied && !$isAutocomplete) return '';
+        if (!isset($last['field']->filter) || !$last['field']->filter->isApplied && !$isAutoComplete) return '';
 
-        if ($isAutocomplete) {
+        if ($isAutoComplete) {
             $filter = new TableOutputStringFilter($last['field']);
-            $filter->includes['value'] = $autocompleteValue;
+            $filter->includes['value'] = $autoCompleteValue;
             $filter->isApplied = true;
             $last['field']->filter = $filter;
         } else {
@@ -193,6 +208,11 @@ class TableOutputQueryHandler
         return $s;
     }
 
+    /**
+     * Get the field string from a TableOutput table.
+     * @param TableOutputTable $table
+     * @return string
+     */
     public function get_field_string(TableOutputTable $table): string
     {
         $arr = array(
@@ -209,7 +229,7 @@ class TableOutputQueryHandler
     }
 
     /**
-     * Compose a DELETE query.
+     * Compose a delete query.
      * @return string the query
      */
     public function delete(): string

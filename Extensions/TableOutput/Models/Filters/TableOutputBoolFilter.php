@@ -1,9 +1,10 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Christoph
- * Date: 04.06.2016
- * Time: 23:45
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
  */
 
 namespace Onyx\Extensions\TableOutput\Models\Filters;
@@ -16,6 +17,10 @@ class TableOutputBoolFilter extends TableOutputFilter
         'value' => 0,
     ];
 
+    /**
+     * Get this filter.
+     * @return array
+     */
     public function get(): array
     {
         return array(
@@ -23,6 +28,10 @@ class TableOutputBoolFilter extends TableOutputFilter
         );
     }
 
+    /**
+     * Get this filter values.
+     * @return array
+     */
     public function get_values(): array
     {
         return array(
@@ -30,6 +39,11 @@ class TableOutputBoolFilter extends TableOutputFilter
         );
     }
 
+    /**
+     * Get this filter SQL.
+     * @param string $fieldPath
+     * @return string
+     */
     public function get_sql(string $fieldPath): string
     {
         return sprintf('%s = :%s', $this->field->name, 'on_' . $fieldPath);

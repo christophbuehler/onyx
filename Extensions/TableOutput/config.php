@@ -9,7 +9,6 @@
 
 namespace Onyx\Extensions\TableOutput;
 
-
 /**
  * The default number of page records.
  */

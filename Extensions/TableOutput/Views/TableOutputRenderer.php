@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
+ */
+
 namespace Onyx\Extensions\TableOutput\Views;
 
 use Exception;
@@ -16,11 +23,19 @@ class TableOutputRenderer
     private $singlePage = false;
     private $tableOutput;
 
+    /**
+     * TableOutputRenderer constructor.
+     * @param TableOutput $tableOutput
+     */
     public function __construct(TableOutput $tableOutput)
     {
         $this->tableOutput = $tableOutput;
     }
 
+    /**
+     * Render this TableOutput table.
+     * @return string
+     */
     public function render_table()
     {
         // get the page buttons
@@ -56,6 +71,11 @@ class TableOutputRenderer
         return $structure;
     }
 
+    /**
+     * Parse a field for output.
+     * @param TableOutputField $field
+     * @return array
+     */
     private function parse_field(TableOutputField $field): array
     {
         $pField = [
@@ -161,6 +181,12 @@ class TableOutputRenderer
             ->parse();
     }
 
+    /**
+     * Create a new filter for a field.
+     * @param $field
+     * @return TableOutputBoolFilter|TableOutputDateFilter|TableOutputNumberFilter|TableOutputStringFilter
+     * @throws Exception
+     */
     public function create_filter($field)
     {
         switch ($field->type) {
@@ -180,12 +206,21 @@ class TableOutputRenderer
         }
     }
 
+    /**
+     * Get the page buttons.
+     * @param int $page
+     * @param array $filterValues
+     * @param string $orderBy
+     * @param bool $orderByReversed
+     * @return array
+     * @throws Exception
+     */
     public function get_page_buttons(int $page = 0, array $filterValues = [], string $orderBy = '', bool $orderByReversed = false): array
     {
         $arr = array(
             'buttons' => [],
         );
-
+        
         $orderBy = $this->tableOutput->check_order_by($orderBy);
         $orderByField = $this->tableOutput->rootTable->get_field_by_name($orderBy);
 
