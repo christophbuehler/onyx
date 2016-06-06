@@ -1,3 +1,10 @@
+/**
+ * TableOutput is an Onyx Extension for creating dynamic data tables
+ * out of a MySQL data source.
+ * @param tableOutput
+ * @param serverUrl
+ * @constructor
+ */
 var TableOutputHandler = function (tableOutput, serverUrl) {
     this.tableOutputId = tableOutput.id;
     this.tableOutput = tableOutput;
@@ -7,6 +14,7 @@ var TableOutputHandler = function (tableOutput, serverUrl) {
     this.selectedRows = {};
     this.serverUrl = serverUrl;
     this.pageSwitchingTimer = {};
+
     this.init();
 };
 

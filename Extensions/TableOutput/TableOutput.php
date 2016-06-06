@@ -17,7 +17,7 @@ use Onyx\Extensions\TableOutput\Views\TableOutputRenderer;
 use Onyx\Libs\Database;
 
 /**
- * TableOutput is a framework for creating dynamic data tables
+ * TableOutput is an Onyx Extension for creating dynamic data tables
  * out of a MySQL data source.
  */
 class TableOutput

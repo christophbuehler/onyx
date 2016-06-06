@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * TableOutput german language file.
+ */
+
 // general
 define('TABLE_OUTPUT_NO_ENTRIES_FOUND', 'Keine Einträge gefunden.');
 define('TABLE_OUTPUT_ENTRIES', 'Einträge');

@@ -78,7 +78,7 @@ class HomeController extends Controller
 
     /**
      * POST: /home
-     * { $message = 'test' }
+     * { message = 'test' }
      */
     public function post(string $message): PlainResponse
     {
