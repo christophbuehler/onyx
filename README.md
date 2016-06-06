@@ -1,6 +1,6 @@
 # Onyx
 
-Onyx is a lightweight PHP framework for building view-based web-applications.
+Onyx is a lightweight PHP framework for building web-applications.
 
 ```php
 require 'Onyx/autoloader.php';
@@ -9,8 +9,8 @@ use Onyx\Onyx;
 $app = new Onyx();
 
 $app
-    ->route('/^auth/')
-	->via;
+    ->route('/^login/')
+	->via(['GET', 'POST']);
 
 $app
     ->route('/^home/')
@@ -45,11 +45,12 @@ $app->set_user_roles(function (User $user) use ($app) {
 
 # Application Structure
 
-The prefered structure of an Onyx application:
-** /Onyx **
-** /Resources **
+The preferred structure of an Onyx application:
+* */Onyx*
+* */Resources*
+* */Resources/HomeController.php*
 
-# View Controllers
+# Resource Controllers
 
 ```php
 namespace Resources;
@@ -66,5 +67,23 @@ class HomeController extends Controller
 	{
 		return new JSONResponse('This is the home page.');
 	}
+	
+	/**
+	 * GET: /home?method=page-title
+	 */
+	public function get_page_title(): JSONResponse
+	{
+		return new JSONResponse('Home');
+	}
+
+    /**
+     * POST: /home
+     * { $message = 'test' }
+     */
+    public function post(string $message): PlainResponse
+    {
+        // TODO: Post a message.
+        return new PlainResponse('Success');
+    }
 }
 ```
