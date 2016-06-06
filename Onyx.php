@@ -24,16 +24,23 @@ class Onyx
     private $reqArgs = [];
     private $url;
     private $reqMethod;
-    public $db;
+    private $db;
 
+    /**
+     * Onyx constructor.
+     */
     public function __construct()
     {
         Session::init();
-        $this->db = new Database();
         $this->create_user();
         $this->set_req_method();
         $this->set_url();
         $this->set_req_args();
+    }
+
+    public function set_db(Database $db)
+    {
+        $this->$db = $db;
     }
 
     /**
@@ -46,11 +53,19 @@ class Onyx
         $this->user->authenticate(Session::get('userId'));
     }
 
-    public function set_user_roles($f)
+    /**
+     * @param callable $f
+     */
+    public function set_user_roles(callable $f)
     {
-        $f($this->user);
+        $f($this->user, $this->db);
     }
 
+    /**
+     * @param string $path
+     * @param string|null $dest
+     * @return Route
+     */
     public function route(string $path, string $dest = null)
     {
         $route = new Route($path, $dest);
@@ -91,7 +106,7 @@ class Onyx
 
         $_POST = json_decode(Utils::utf8_urldecode(
 
-        // replace plus sign
+            // replace plus sign
             str_replace('+', '%2B', $postData)
         ), true);
 

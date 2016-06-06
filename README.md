@@ -4,6 +4,9 @@ Onyx is a lightweight PHP framework for building web-applications.
 
 ```php
 require 'Onyx/autoloader.php';
+
+use Onyx\Libs\Database;
+use Onyx\Libs\User;
 use Onyx\Onyx;
 
 $app = new Onyx();
@@ -24,15 +27,23 @@ $app
 $app->run();
 ```
 
+# Using a database
+
+```php
+$app->set_db(new Database(
+    DB_TYPE, DB_HOST, DB_NAME, DB_CHARSET, DB_USER, DB_PASS
+));
+```
+
 # Authorization
 
 Onyx provides built-in, role-based authorization.
-User roles can be assigned using 'set_user_roles'.
+User roles can be assigned using the 'set_user_roles' method.
 
 ```php
-$app->set_user_roles(function (User $user) use ($app) {
+$app->set_user_roles(function (User $user, Database $db) use ($app) {
     if (!$user->is_authenticated()) return;
-    $sth = $app->db->prepare('
+    $sth = $db->prepare('
 		SELECT name
 		FROM role
 		  LEFT JOIN login_has_role ON 

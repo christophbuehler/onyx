@@ -11,7 +11,12 @@ class Route
     private $dest;
     private $via;
     private $roles;
-
+    
+    /**
+     * Route constructor.
+     * @param string $path
+     * @param string|null $dest
+     */
     function __construct(string $path = '*', string $dest = null)
     {
         $this->path = $path;
@@ -19,6 +24,10 @@ class Route
         $this->dest = $dest;
     }
 
+    /**
+     * @param array $roles
+     * @return Route
+     */
     public function roles(array $roles): Route
     {
         $this->roles = $roles;
@@ -76,6 +85,10 @@ class Route
         return false;
     }
 
+    /**
+     * @param string $method
+     * @return bool
+     */
     private function method_matches(string $method): bool
     {
         if ($this->via === null) return true;
@@ -84,13 +97,23 @@ class Route
         return false;
     }
 
+    /**
+     * @param string $url
+     * @return bool
+     */
     private function path_matches(string $url): bool
     {
         return preg_match($this->path, $url);
     }
 
+    /**
+     * @param string $url
+     * @return string
+     */
     private function get_resource_controller_name(string $url): string
     {
+        if ($this->dest !== null) $url = $this->dest;
+
         // capitalize every letter after dash
         $url = implode('/', array_map('ucfirst', explode('/', $url)));
 

@@ -12,7 +12,12 @@ class Controller
 {
     public $db;
     public $user;
-    
+
+    /**
+     * Controller constructor.
+     * @param Database $db
+     * @param User $user
+     */
     function __construct(Database $db, User $user)
     {
         $this->db = $db;
