@@ -1,6 +1,6 @@
 # Onyx
 
-Onyx is a lightweight framework for building powerful endpoints in PHP.
+Onyx is a PHP framework for building lightweight backend structures.
 This is an open beta of the Onyx project. Use at your own risk!
 
 ```php
@@ -40,6 +40,7 @@ $app->set_db(new PDODb(
 
 Onyx ships with a PDO data provider.
 You can create a custom data provider by simply implementing the Onyx\DataProviders\iDb interface.
+Keep in mind, that some extensions might require the default PDO data provider.
 
 # Authorization
 
