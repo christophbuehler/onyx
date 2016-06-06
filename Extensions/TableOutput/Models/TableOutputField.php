@@ -12,7 +12,7 @@ class TableOutputField
     public $link;
     public $independent = false;
     public $suggestion;
-
+    
     public $filter;
     public $type;
     public $autoIncrement = false;

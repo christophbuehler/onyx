@@ -5,7 +5,6 @@ Onyx is a lightweight PHP framework for building web-applications.
 ```php
 require 'Onyx/autoloader.php';
 
-use Onyx\Libs\Database;
 use Onyx\Libs\User;
 use Onyx\Onyx;
 
@@ -27,13 +26,19 @@ $app
 $app->run();
 ```
 
-# Using a database
+# Using a data provider
 
 ```php
-$app->set_db(new Database(
+use Onyx\DataProviders\PDODb;
+$app->set_db(new PDODb(
     DB_TYPE, DB_HOST, DB_NAME, DB_CHARSET, DB_USER, DB_PASS
 ));
 ```
+
+# Creating a custom data provider
+
+Onyx ships with a PDO data provider.
+You can create a custom data provider by simply implementing the Onyx\DataProviders\iDb interface.
 
 # Authorization
 

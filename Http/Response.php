@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
+ */
+
 namespace Onyx\Http;
 
 abstract class Response
@@ -7,6 +14,10 @@ abstract class Response
     public $content;
     public $code;
 
+    /**
+     * Serialize this request.
+     * @return string
+     */
     abstract protected function serialize(): string;
 
     /**
@@ -31,6 +42,9 @@ abstract class Response
         return $this;
     }
 
+    /**
+     * Set the content type of this request.
+     */
     public function set_content_type()
     {
         header('Content-Type:text/html;charset=utf-8');

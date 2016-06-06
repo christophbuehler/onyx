@@ -1,8 +1,18 @@
 <?php
 
+/**
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
+ */
+
 namespace Onyx\Libs;
 
+use Exception;
 use Invoker\Invoker;
+use Onyx\DataProviders\iDb;
+use Onyx\Http\PlainResponse;
 use Resources;
 
 class Route
@@ -11,7 +21,7 @@ class Route
     private $dest;
     private $via;
     private $roles;
-    
+
     /**
      * Route constructor.
      * @param string $path
@@ -47,14 +57,14 @@ class Route
     /**
      * @param string $url
      * @param string $method
-     * @param Database $db
+     * @param iDb $db
      * @param User $user
      * @param array $args
      * @return bool
      * @throws \Invoker\Exception\NotCallableException
      * @throws \Invoker\Exception\NotEnoughParametersException
      */
-    public function execute(string $url, string $method, Database $db, User $user, array $args): bool
+    public function execute(string $url, string $method, iDb $db, User $user, array $args): bool
     {
         if (
             !$this->method_matches($method) ||
@@ -66,9 +76,15 @@ class Route
 
         $controllerName = $this->get_resource_controller_name($url);
 
-        echo (new Invoker())
-            ->call([new $controllerName($db, $user), $methodName], $args)
-            ->send();
+        try {
+            echo (new Invoker())
+                ->call([new $controllerName($db, $user), $methodName], $args)
+                ->send();
+        } catch (Exception $e) {
+            echo (new PlainResponse($e->getMessage(), 400))
+                ->send();
+        }
+
 
         return true;
     }

@@ -1,17 +1,29 @@
 <?php
 
+/**
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
+ */
+
 namespace Onyx\Extensions\TableOutput\Controllers;
 
+use Exception;
+use Onyx\DataProviders\PDODatabase;
 use Onyx\Extensions\TableOutput\Models\TableOutputConfig;
 use Onyx\Extensions\TableOutput\TableOutput;
-use Onyx\Libs\Database;
 
 class TableOutputController
 {
   public $tableOutputs = array();
   private $db;
 
-  public function __construct(Database $db)
+  /**
+   * TableOutputController constructor.
+   * @param PDODatabase $db
+   */
+  public function __construct(PDODatabase $db)
   {
     $this->db = $db;
   }
@@ -36,14 +48,16 @@ class TableOutputController
   }
 
   /**
-  * Get a table-output by its ID.
-  * @param  string $id  the id
-  * @return TableOutput the table-output
-  */
+   * Get a TableOutput by its ID.
+   * @param string $id
+   * @return TableOutput
+   * @throws Exception
+   */
   public function get_table_by_id(string $id): TableOutput
   {
     foreach ($this->tableOutputs as $tableOutput)
       if ($tableOutput->id == $id) return $tableOutput;
-    return null;
+
+    throw new Exception('Could not find table.');
   }
 }

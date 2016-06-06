@@ -1,12 +1,15 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Christoph
- * Date: 04.06.2016
- * Time: 20:07
+ * Copyright (c) 2016 The Onyx Project Authors. All rights reserved.
+ * This project is licensed under GNU GPL found at http://gnu.org/licenses/gpl.txt
+ * The Onyx project is a web-application-framework, designed and optimized
+ * for simple usage and programmer efficiency.
  */
 
 namespace Onyx\Libs;
+
+use Onyx\DataProviders\iDb;
 
 class Controller
 {
@@ -15,10 +18,10 @@ class Controller
 
     /**
      * Controller constructor.
-     * @param Database $db
+     * @param iDb $db
      * @param User $user
      */
-    function __construct(Database $db, User $user)
+    function __construct(iDb $db, User $user)
     {
         $this->db = $db;
         $this->user = $user;

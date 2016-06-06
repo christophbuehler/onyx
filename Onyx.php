@@ -15,7 +15,7 @@ use Onyx\Libs\Session;
 use Onyx\Libs\User;
 use Onyx\Libs\Utils;
 use Onyx\Libs\Route;
-use Onyx\Libs\Database;
+use Onyx\DataProviders\iDb;
 
 class Onyx
 {
@@ -38,7 +38,7 @@ class Onyx
         $this->set_req_args();
     }
 
-    public function set_db(Database $db)
+    public function set_db(iDb $db)
     {
         $this->$db = $db;
     }

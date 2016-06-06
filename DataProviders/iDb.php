@@ -7,16 +7,9 @@
  * for simple usage and programmer efficiency.
  */
 
-namespace Onyx\Http;
+namespace Onyx\DataProviders;
 
-class PlainResponse extends Response
+interface iDb
 {
-    /**
-     * Serialize this request.
-     * @return string
-     */
-    public function serialize(): string
-    {
-        return $this->content;
-    }
+
 }

@@ -6,6 +6,7 @@ require_once 'Langs/de.php';
 require_once 'Onyx/Extensions/TableOutput/config.php';
 
 use Exception;
+use Onyx\DataProviders\PDODatabase;
 use Onyx\Extensions\TableOutput\Controllers\TableOutputController;
 use Onyx\Extensions\TableOutput\Controllers\TableOutputParser;
 use Onyx\Extensions\TableOutput\Models\TableOutputConfig;
@@ -14,7 +15,6 @@ use Onyx\Extensions\TableOutput\Models\TableOutputQueryHandler;
 use Onyx\Extensions\TableOutput\Models\TableOutputRootTable;
 use Onyx\Extensions\TableOutput\Models\TableOutputTable;
 use Onyx\Extensions\TableOutput\Views\TableOutputRenderer;
-use Onyx\Libs\Database;
 
 /**
  * TableOutput is an Onyx Extension for creating dynamic data tables
@@ -39,7 +39,7 @@ class TableOutput
      * @param TableOutputConfig $config the table-output configuration
      * @param TableOutputTable $table the table-output root table
      */
-    public function __construct(Database $db, String $id, TableOutputController $controller, array $rootTableArgs, TableOutputConfig $config)
+    public function __construct(PDODatabase $db, String $id, TableOutputController $controller, array $rootTableArgs, TableOutputConfig $config)
     {
         $this->db = $db;
         $this->id = $id;
@@ -57,7 +57,7 @@ class TableOutput
 
     /**
      * Display the TableOutput table.
-     * @return string the table component string
+     * @return string
      */
     public function show()
     {
@@ -66,10 +66,10 @@ class TableOutput
 
     /**
      * Get the order by value.
-     * @param  string $orderBy the desired order by field name
-     * @return string          the resulting order by field name
+     * @param  string
+     * @return string
      */
-    public function check_order_by($orderBy)
+    public function check_order_by($orderBy): string
     {
 
         // check if the order by field is valid
@@ -87,12 +87,16 @@ class TableOutput
             if (!isset($field->header)) continue;
             return $field->name;
         }
+
+        return '';
     }
 
     /**
      * Set filter values for one particular field.
-     * @param string $fieldName the field name
-     * @param array $filterValues the filter values
+     * @param string $path
+     * @param array $values
+     * @return bool
+     * @throws Exception
      */
     public function set_filter(string $path, array $values): bool
     {
@@ -113,10 +117,11 @@ class TableOutput
 
     /**
      * Get a TableOutputField object from the relational construction path.
-     * @param  string $path the path to the field
-     * @param  bool $reverse whether the path is in reverse order
-     * @param  TableOutputTable $table the table object
-     * @return TableOutputField          the resulting TableOutputField from this path
+     * @param string $path
+     * @param bool $reverse
+     * @param TableOutputTable|null $table
+     * @return TableOutputField
+     * @throws Exception
      */
     public function get_field_from_path(string $path, $reverse = true, TableOutputTable $table = null): TableOutputField
     {
@@ -135,10 +140,11 @@ class TableOutput
 
     /**
      * Get the field equivalent from a path of string entities.
-     * @param  string $path the path
-     * @param  TableOutputTable $table the table object
-     * @param  bool $reverse whether the path is in reverse order or not
-     * @return array                    an array of TableOutputField items
+     * @param string $path
+     * @param TableOutputTable $table
+     * @param bool $reverse
+     * @return array
+     * @throws Exception
      */
     public function path_to_fields(string $path, TableOutputTable $table, bool $reverse = true): array
     {
@@ -164,35 +170,34 @@ class TableOutput
         return $path;
     }
 
-    public function delete($rowId)
+    /**
+     * Delete a record.
+     * @param $rowId
+     * @return string
+     * @throws Exception
+     */
+    public function delete($rowId): string
     {
         // user is not allowed to delete
-        if (!$this->config->allowDelete) {
-            return array(
-                'code' => 1,
-                'msg' => 'Not allowed to delete an entry.',
-            );
-        }
+        if (!$this->config->allowDelete)
+            throw new Exception('Not allowed to delete an entry.');
 
         $sth = $this->db->prepare($this->queryHandler->delete());
 
-        if ($sth->execute(array(
-                ':id' => $rowId,
-            )) && $sth->rowCount() == 1
-        ) {
-            return array(
-                'code' => 0,
-                'msg' => 'Entry successfully deleted.',
-            );
-        }
+        if ($sth->execute(array(':id' => $rowId,)) &&
+            $sth->rowCount() == 1
+        ) return 'Entry successfully deleted.';
 
-        return array(
-            'code' => 1,
-            'msg' => $this->parseSQLError($sth->errorInfo()),
-        );
+        throw new Exception($this->parseSQLError($sth->errorInfo()));
     }
 
-    public function insert($fieldValues)
+    /**
+     * Insert a new data set.
+     * @param $fieldValues
+     * @return array
+     * @throws Exception
+     */
+    public function insert($fieldValues): array
     {
         if (!$this->config->allowAppend) {
             return array(
@@ -212,30 +217,28 @@ class TableOutput
             } elseif (isset($fieldValues[$field->name]) && $fieldValues[$field->name] != '') {
                 $val = $fieldValues[$field->name] == '' ? null : $fieldValues[$field->name];
             } else if ($field->notNull) {
-                return array(
-                    'code' => 1,
-                    'msg' => sprintf('Fehlender Wert: %s', $field->header ?? $field->name),
-                );
+                throw new Exception(sprintf('Fehlender Wert: %s', $field->header ?? $field->name));
             }
 
             $valArr[':' . $field->name] = $val;
         }
 
         if ($sth->execute($valArr)) {
-            return array(
-                'code' => 0,
+            return [
                 'id' => $this->db->lastInsertId(),
                 'values' => $valArr,
                 'msg' => 'Entry successfully added.',
-            );
+            ];
         }
 
-        return array(
-            'code' => 1,
-            'msg' => $this->parseSQLError($sth->errorInfo()),
-        );
+        throw new Exception($this->parseSQLError($sth->errorInfo()));
     }
 
+    /**
+     * Format an SQL error.
+     * @param array $error
+     * @return String
+     */
     public function parseSQLError(Array $error): String
     {
         switch ($error[0]) {
@@ -244,6 +247,13 @@ class TableOutput
         }
     }
 
+    /**
+     * Edit a record.
+     * @param $rowId
+     * @param $fieldValues
+     * @return array
+     * @throws Exception
+     */
     public function edit($rowId, $fieldValues)
     {
         if (!$this->config->allowEdit) {
@@ -294,6 +304,11 @@ class TableOutput
         );
     }
 
+    /**
+     * Convert a path to a PDO parameter string.
+     * @param string $path
+     * @return string
+     */
     public function path_to_pdo_parameter(string $path): string
     {
         return str_replace('.', '_', $path);
