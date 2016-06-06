@@ -1,6 +1,7 @@
 # Onyx
 
-Onyx is a lightweight PHP framework for building web-applications.
+Onyx is a lightweight framework for building powerful endpoints in PHP.
+This is an open beta of the Onyx project. Use at your own risk!
 
 ```php
 require 'Onyx/autoloader.php';
@@ -61,12 +62,16 @@ $app->set_user_roles(function (User $user, Database $db) use ($app) {
 
 # Application Structure
 
-The preferred structure of an Onyx application:
+The recommended structure of an Onyx application:
 * */Onyx*
 * */Resources*
 * */Resources/HomeController.php*
 
 # Resource Controllers
+
+Resource controllers handle requests to specific endpoints.
+Onyx uses convention over configuration. Therefore, no registration for new endpoints is required.
+Exceptions thrown within a request function result in a status code of 400.
 
 ```php
 namespace Resources;
@@ -98,6 +103,9 @@ class HomeController extends Controller
      */
     public function post(string $message): PlainResponse
     {
+        if (!$this->user->is_authenticated())
+            return new PlainResponse('Authentication required.', 401);
+
         // TODO: Post a message.
         return new PlainResponse('Success');
     }

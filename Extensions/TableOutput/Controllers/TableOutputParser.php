@@ -99,7 +99,7 @@ class TableOutputParser
         if (filter_var($linkVal, FILTER_VALIDATE_EMAIL)) {
             return '<a href="mailto: ' . $linkVal . '">' . $linkVal . '</a>';
         }
-
+        
         // it's a valid url
         if (preg_match('/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/', $linkVal)) {
             return '<a href="' . $linkVal . '">' . $linkVal . '</a>';
@@ -107,7 +107,7 @@ class TableOutputParser
 
         return $linkVal;
     }
-    
+
     /**
      * Get link link proposals for auto completion.
      * @param string $fieldName
