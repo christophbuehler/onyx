@@ -285,7 +285,7 @@ class Smarty extends Smarty_Internal_TemplateBase
      */
     public $use_sub_dirs = false;
     /**
-     * allow ambiguous resources (that are made unique by the resource handler)
+     * allow ambiguous Resources (that are made unique by the resource handler)
      * @var boolean
      */
     public $allow_ambiguous_resources = false;
@@ -453,7 +453,7 @@ class Smarty extends Smarty_Internal_TemplateBase
      */
     public $compile_locking = true;
     /**
-     * Controls whether cache resources should emply locking mechanism
+     * Controls whether cache Resources should emply locking mechanism
      * @var boolean
      */
     public $cache_locking = false;
@@ -531,7 +531,7 @@ class Smarty extends Smarty_Internal_TemplateBase
      */
     public $registered_filters = array();
     /**
-     * registered resources
+     * registered Resources
      * @var array
      */
     public $registered_resources = array();
@@ -541,7 +541,7 @@ class Smarty extends Smarty_Internal_TemplateBase
      */
     public $_resource_handlers = array();
     /**
-     * registered cache resources
+     * registered cache Resources
      * @var array
      */
     public $registered_cache_resources = array();

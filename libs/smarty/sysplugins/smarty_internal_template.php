@@ -103,7 +103,7 @@ class Smarty_Internal_Template extends Smarty_Internal_TemplateBase
      * Create template data object
      *
      * Some of the global Smarty settings copied to template scope
-     * It load the required template resources and cacher plugins
+     * It load the required template Resources and cacher plugins
      *
      * @param string                   $template_resource template resource string
      * @param Smarty                   $smarty            Smarty instance
@@ -649,7 +649,7 @@ class Smarty_Internal_Template extends Smarty_Internal_TemplateBase
                 }
                 $this->source = Smarty_Resource::source($this);
                 // cache template object under a unique ID
-                // do not cache eval resources
+                // do not cache eval Resources
                 if ($this->source->type != 'eval') {
                     if ($this->smarty->allow_ambiguous_resources) {
                         $_templateId = $this->source->unique_resource . $this->cache_id . $this->compile_id;

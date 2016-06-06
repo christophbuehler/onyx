@@ -53,8 +53,8 @@ function smarty_function_fetch($params, $template)
     }
 
     $content = '';
-    if ($protocol == 'http') {
-        // http fetch
+    if ($protocol == 'Http') {
+        // Http fetch
         if ($uri_parts = parse_url($params['file'])) {
             // set defaults
             $host = $server_name = $uri_parts['host'];

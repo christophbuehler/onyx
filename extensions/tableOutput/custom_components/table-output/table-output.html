@@ -1,347 +1,616 @@
 <dom-module id="table-output">
-  <style>
-    :host {
-      display: block;
-      height: 100%;
-    }
+    <style>
+        :host {
+            display: block;
+            height: 100%;
+        }
 
-    .table-head {
-      white-space: nowrap;
-      padding-left: 48px;
-      display: inline-block;
-      min-width: 100%;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
-      background: #2196F3;
-      padding-top: 8px;
-      flex-shrink: 0;
-      z-index: 1;
-      flex-grow: 0;
-      height: 40px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    }
+        .table-head {
+            white-space: nowrap;
+            padding-left: 48px;
+            display: inline-block;
+            min-width: 100%;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            background: #2196F3;
+            padding-top: 8px;
+            flex-shrink: 0;
+            z-index: 1;
+            flex-grow: 0;
+            height: 40px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+        }
 
-    .table-head-wrapper {
-      display: inline-block;
-      white-space: nowrap;
-    }
+        .table-head-wrapper {
+            display: inline-block;
+            white-space: nowrap;
+        }
 
-    #fab-container { position: fixed; right: 24px; bottom: 80px; }
-    #fab-container paper-fab { margin-top: 16px; }
-    .new-fab {
-      --paper-fab-background: var(--main-color);
-    }
-    #fab-container { z-index: 10; }
-    #spinner { margin: 16px; }
+        #fab-container {
+            position: fixed;
+            right: 24px;
+            bottom: 80px;
+        }
 
-    :root {
-      --paper-tab-ink: var(--main-color);
-      --paper-tabs-selection-bar-color: var(--main-color);
-    }
+        #fab-container paper-fab {
+            margin-top: 16px;
+        }
 
-    .table-body { flex-shrink: 0; flex-grow: 1; display: inline-block; }
-    .table-output-card.opened .card-content { height: auto; }
-    .table-output-card.opened .down-btn { transform: rotate(180deg); }
-    .table-output-card { margin: 16px; display: block; }
-    .card-content { height: 112px; overflow: hidden; }
-    .card-actions paper-icon-button { color: #C21856; }
-    .table-output-bounding-box { height: 100%; }
-    .table-content { display: flex; height: 100%; position: relative; width: 100%; flex-direction: column; }
-    #overflowTabs { height: 80px; flex-shrink: 0; }
-    .table-scroll-box { position: relative; overflow-x: scroll; overflow-y: hidden; flex-grow: 1; }
-    .body-scroll-wrapper { position: absolute; height: 100%; overflow-y: scroll; }
-  </style>
-  <template strip-whitespace>
-    <div class="table-output-bounding-box">
-      <div class="table-output-info">
-        <div id="fab-container">
+        .new-fab {
+            --paper-fab-background: var(--main-color);
+        }
 
-          <!-- has at least one selection -->
-          <template is="dom-if" if="{{hasSelection}}">
+        #fab-container {
+            z-index: 10;
+        }
 
-            <!-- show edit button because exactly one entry is selected -->
-            <template is="dom-if" if="{{hasOneSelection}}">
-              <paper-fab class="edit-fab" on-tap="showEditBlendBox" icon="icons:create"></paper-fab>
-            </template>
+        #spinner {
+            margin: 16px;
+        }
 
-            <!-- show delete button because more than one entry is selected -->
-            <paper-fab class="remove-fab" on-tap="showDeleteBlendBox" icon="remove"></paper-fab>
-          </template>
+        :root {
+            --paper-tab-ink: var(--main-color);
+            --paper-tabs-selection-bar-color: var(--main-color);
+        }
 
-          <!-- show new button because nothing is selected -->
-          <paper-fab class="new-fab" on-tap="showNewBlendBox" icon="add"></paper-fab>
-        </div>
-      </div>
-      <div hidden="{{!isLoading}}">
-        <div id="spinner">
-          <paper-spinner id="spinner" active></paper-spinner>
-        </div>
-      </div>
-      <div class="table-content" hidden="{{isLoading}}">
-        <div class="table-scroll-box">
-          <div class="table-head">
-            <div class="table-head-wrapper">
+        .table-body {
+            flex-shrink: 0;
+            flex-grow: 1;
+            display: inline-block;
+        }
 
-              <!-- show table head -->
-              <template is="dom-repeat" items="{{structure}}"><!--
-                --><table-output-header order-by="{{orderBy}}" is-order-by-reversed="{{isOrderByReversed}}" field="{{item}}"></table-output-header><!--
-              --></template>
-            </div>
-          </div>
-          <div class="body-scroll-wrapper">
-            <div class="table-body" on-tap="updateHasSelection">
+        .table-output-card.opened .card-content {
+            height: auto;
+        }
 
-              <!-- show table rows -->
-              <template is="dom-repeat" items="{{records}}"><!--
-              --><table-output-row structure="{{structure}}" row="{{item}}"></table-output-row><!--
-              --></template>
-            </div>
-          </div>
-        </div>
-        <template is="dom-if" if="printPageButtons">
+        .table-output-card.opened .down-btn {
+            transform: rotate(180deg);
+        }
 
-          <!-- print page buttons -->
-          <paper-tabs id="overflowTabs" scrollable selected="{{selectedPage}}">
-            <template is="dom-repeat" items="{{pageButtons}}">
-              <paper-tab on-tap="switchPage">
-                <div class='nav-btn'>
-                  <span class='num'>{{item.num}}</span>
-                  <span class='desc'>
-                    <span class='l'>{{item.from}}</span> to <span class='l'>{{item.to}}</span>
-                  </span>
-                </div>
-              </paper-tab>
-            </template>
-          </paper-tabs>
-        </template>
-      </div>
-    </div>
-    <blend-box
-      url="[[url]]"
-      table-output-id="[[id]]"
-      id="blendBox"></blend-box>
-  </template>
-  <script>
-    Polymer({
-      is: 'table-output',
-      properties: {
-        id: String,
-        printPageButtons: {
-          type: Boolean,
-          value: true
-        },
-        isLoading: {
-          type: Boolean,
-          value: false
-        },
-        orderBy: {
-          type: String,
-          value: ''
-        },
-        isOrderByReversed: {
-          type: Boolean,
-          value: false
-        },
-        selectedPage: {
-          type: Number,
-          value: 0
-        },
-        pageButtons: Array,
-        orientation: {
-          type: String,
-          value: 'vertical'
-        },
-        structure: {
-          type: Array,
-          value: []
-        },
-        records: {
-          type: Array,
-          value: []
-        },
-        singlePage: {
-          type: Boolean,
-          value: false
-        },
-        filter: {
-          type: Object,
-          value: function() { return {}; }
-        },
-        numberOfRecords: Number,
-        handler: Object,
-        hasOneSelection: {
-          type: Boolean,
-          value: false
-        },
-        hasSelection: {
-          type: Boolean,
-          value: false
-        },
-        url: String
-      },
-      ready: function() {
-        var _this = this;
+        .table-output-card {
+            margin: 16px;
+            display: block;
+        }
 
-        // handles client-side table-output
-        this.handler = new TableOutputHandler(this, this.url + '/');
+        .card-content {
+            height: 112px;
+            overflow: hidden;
+        }
 
-        // load the first page
-        this.async(function() {
-          this.handler.currentPage = 0;
-          this.handler.loadPage();
-        });
+        .card-actions paper-icon-button {
+            color: #C21856;
+        }
 
-        // clicked on a header
-        this.addEventListener('update-order-by', function(e) {
-          var path = e.detail.path.join('.');
+        .table-output-bounding-box {
+            height: 100%;
+        }
 
-          // this is currently the active order by field
-          if (_this.orderBy == path) {
+        .table-content {
+            display: flex;
+            height: 100%;
+            position: relative;
+            width: 100%;
+            flex-direction: column;
+        }
 
-            if (_this.isOrderByReversed) {
+        #overflowTabs {
+            height: 80px;
+            flex-shrink: 0;
+        }
 
-              // remove the order by
-              _this.orderBy = '';
-              _this.isOrderByReversed = false;
-            } else {
+        .table-scroll-box {
+            position: relative;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            flex-grow: 1;
+        }
 
-              // reverse the order by
-              _this.isOrderByReversed = true;
+        .body-scroll-wrapper {
+            position: absolute;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .table-output-card .label {
+            font-weight: 600;
+            color: #C21856;
+            letter-spacing: 1px;
+            font-size: 12px;
+            flex-grow: 1;
+            display: block;
+        }
+
+        .table-output .check .check-icon {
+            line-height: 18px;
+            opacity: 0;
+            color: #006064;
+            transform: scale(.2);
+            width: 18px;
+            height: 18px;
+            margin: 7px;
+            transition: opacity .2s ease .1s, transform .2s ease .2s;
+        }
+
+        .table-output .check div div {
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .table-output .check {
+            padding: 0;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .table-output .check > div {
+            position: relative;
+            height: 32px;
+            width: 32px;
+            cursor: pointer;
+        }
+
+        .table-output .check .square {
+            border: 2px solid #b2b2b2;
+            width: 12px;
+            height: 12px;
+            margin: 8px;
+            border-radius: 2px;
+            transition: border-radius .2s ease, transform .2s ease;
+        }
+
+        .table-content {
+            width: 100%;
+        }
+
+        .table-content .row.selected .check .square {
+            border-radius: 50%;
+            transform: scale(0);
+        }
+
+        .table-content .row.selected .check .check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .link-btn {
+            cursor: pointer;
+            color: #2979ff;
+            line-height: 34px;
+            height: 34px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .link-btn:active {
+            border-color: #448aff;
+        }
+
+        .total-count {
+            line-height: 36px;
+            display: inline-block;
+            float: right;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .total-count > div {
+            display: inline-block;
+        }
+
+        .nav-btn {
+            line-height: 33px;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            color: #828282;
+        }
+
+        .nav-btn:hover, .next-btn:hover, .prev-btn:hover {
+        }
+
+        .nav-btn .num {
+            display: block;
+            line-height: 22px;
+            height: 22px;
+            width: 22px;
+            margin: 0 auto;
+            font-size: 14px;
+        }
+
+        .nav-btn .desc {
+            color: #727272;
+            line-height: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: block;
+            padding: 0 8px;
+        }
+
+        .nav-btn .desc .l {
+            color: #444;
+            max-width: 32px;
+            width: 32px;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+            overflow: hidden;
+        }
+
+        .next-btn, .prev-btn {
+            flex-shrink: 0;
+            height: 42px;
+            vertical-align: middle;
+            width: 42px;
+            line-height: 42px;
+        }
+
+        .nav-btn[data-current] .num {
+            background: #C21856;
+            border-radius: 50%;
+            color: #fff;
+        }
+
+        @media all and (min-width: 961px) {
+            .page-actions-container {
+                display: none;
             }
 
-          // the active order by is something else
-          } else {
+            .page-actions-container[data-visible=true] {
+                float: left;
+                vertical-align: top;
+                display: inline-block;
+            }
 
-            // set this as the active order by
-            _this.orderBy = path;
-            _this.isOrderByReversed = false;
-          }
+            .page-actions-container button {
+                margin-left: 8px;
+            }
 
-          // debounce order by job
-          this.debounce('update-order-by', function() {
+            .page-actions-container button[data-visible=false] {
+                display: none;
+            }
+        }
 
-            // go to first page
-            _this.handler.currentPage = 0;
+        @media all and (max-width: 960px) {
+            .page-actions-container {
+                -webkit-transform: translateY(80px);
+                transform: translateY(80px);
+                z-index: 1;
+                background: #fff;
+                box-shadow: 0 -2px 2px #bbb;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                padding: 12px;
+                display: flex;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                -moz-transition: transform .2s ease-out;
+                -o-transition: transform .2s ease-out;
+                -webkit-transition: -webkit-transform .2s ease-out;
+                transition: transform .2s ease-out;
+            }
 
-            // reload the page
-            _this.handler.loadPage();
-          }, 400);
+            .page-actions-container[data-visible=true] {
+                transform: translateY(0);
+                -webkit-transform: translateY(0);
+            }
+
+            .page-actions-container button {
+                width: auto;
+                flex-grow: 1;
+                margin: 0 4px;
+            }
+
+            .page-actions-container button[data-visible=false] {
+                display: none;
+            }
+        }
+    </style>
+    <template strip-whitespace>
+        <div class="table-output-bounding-box">
+            <div class="table-output-info">
+                <div id="fab-container">
+
+                    <!-- has at least one selection -->
+                    <template is="dom-if" if="{{hasSelection}}">
+
+                        <!-- show edit button because exactly one entry is selected -->
+                        <template is="dom-if" if="{{hasOneSelection}}">
+                            <paper-fab class="edit-fab" on-tap="showEditBlendBox" icon="icons:create"></paper-fab>
+                        </template>
+
+                        <!-- show delete button because more than one entry is selected -->
+                        <paper-fab class="remove-fab" on-tap="showDeleteBlendBox" icon="remove"></paper-fab>
+                    </template>
+
+                    <!-- show new button because nothing is selected -->
+                    <paper-fab class="new-fab" on-tap="showNewBlendBox" icon="add"></paper-fab>
+                </div>
+            </div>
+            <div hidden="{{!isLoading}}">
+                <div id="spinner">
+                    <paper-spinner id="spinner" active></paper-spinner>
+                </div>
+            </div>
+            <div class="table-content" hidden="{{isLoading}}">
+                <div class="table-scroll-box">
+                    <div class="table-head">
+                        <div class="table-head-wrapper">
+
+                            <!-- show table head -->
+                            <template is="dom-repeat" items="{{structure}}"><!--
+                -->
+                                <table-output-header order-by="{{orderBy}}" is-order-by-reversed="{{isOrderByReversed}}"
+                                                     field="{{item}}"></table-output-header><!--
+              --></template>
+                        </div>
+                    </div>
+                    <div class="body-scroll-wrapper">
+                        <div class="table-body" on-tap="updateHasSelection">
+
+                            <!-- show table rows -->
+                            <template is="dom-repeat" items="[[records]]"><!--
+                            -->
+                                <table-output-row structure="[[structure]]" row="[[item]]"></table-output-row><!--
+              --></template>
+                        </div>
+                    </div>
+                </div>
+                <template is="dom-if" if="printPageButtons">
+
+                    <!-- print page buttons -->
+                    <paper-tabs id="overflowTabs" scrollable selected="{{selectedPage}}">
+                        <template is="dom-repeat" items="{{pageButtons}}">
+                            <paper-tab on-tap="switchPage">
+                                <div class='nav-btn'>
+                                    <span class='num'>{{item.num}}</span>
+                                    <span class='desc'>
+                                        <span class='l'>{{item.from}}</span> to <span class='l'>{{item.to}}</span>
+                                    </span>
+                                </div>
+                            </paper-tab>
+                        </template>
+                    </paper-tabs>
+                </template>
+            </div>
+        </div>
+        <blend-box
+                url="[[viewUrl]]"
+                table-output-id="[[id]]"
+                id="blendBox"></blend-box>
+    </template>
+    <script>
+        Polymer({
+            is: 'table-output',
+            properties: {
+                id: String,
+                printPageButtons: {
+                    type: Boolean,
+                    value: true
+                },
+                isLoading: {
+                    type: Boolean,
+                    value: false
+                },
+                orderBy: {
+                    type: String,
+                    value: ''
+                },
+                isOrderByReversed: {
+                    type: Boolean,
+                    value: false
+                },
+                selectedPage: {
+                    type: Number,
+                    value: 0
+                },
+                pageButtons: Array,
+                orientation: {
+                    type: String,
+                    value: 'vertical'
+                },
+                structure: {
+                    type: Array,
+                    value: []
+                },
+                records: {
+                    type: Array,
+                    reflectToAttribute: true,
+                    value: []
+                },
+                singlePage: {
+                    type: Boolean,
+                    value: false
+                },
+                filter: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    }
+                },
+                numberOfRecords: Number,
+                handler: Object,
+                hasOneSelection: {
+                    type: Boolean,
+                    value: false
+                },
+                hasSelection: {
+                    type: Boolean,
+                    value: false
+                },
+                viewUrl: {
+                    type: String
+                }
+            },
+            ready: function () {
+                var _this = this;
+
+                // handles client-side table-output
+                this.handler = new TableOutputHandler(this, this.viewUrl + '/');
+
+                // load the first page
+                this.async(function () {
+                    this.handler.currentPage = 0;
+                    this.handler.loadPage();
+                });
+
+                // clicked on a header
+                this.addEventListener('update-order-by', function (e) {
+                    var path = e.detail.path.join('.');
+
+                    // this is currently the active order by field
+                    if (_this.orderBy == path) {
+
+                        if (_this.isOrderByReversed) {
+
+                            // remove the order by
+                            _this.orderBy = '';
+                            _this.isOrderByReversed = false;
+                        } else {
+
+                            // reverse the order by
+                            _this.isOrderByReversed = true;
+                        }
+
+                        // the active order by is something else
+                    } else {
+
+                        // set this as the active order by
+                        _this.orderBy = path;
+                        _this.isOrderByReversed = false;
+                    }
+
+                    // debounce order by job
+                    this.debounce('update-order-by', function () {
+
+                        // go to first page
+                        _this.handler.currentPage = 0;
+
+                        // reload the page
+                        _this.handler.loadPage();
+                    }, 400);
+                });
+
+                // clicked on a filter of a header
+                this.addEventListener('apply-filter', function (e) {
+                    var field = e.detail.field,
+                            path = e.detail.path.join('.');
+
+                    // this field has an active filter
+                    if (_this.handler.filter[path] && _this.handler.filter[path].isApplied) {
+
+                        // remove this filter
+                        _this.handler.filter[path].isApplied = false;
+
+                        // detach filter
+                        e.detail.detach();
+
+                        // reload page
+                        _this.handler.loadPage();
+
+                        return;
+                    }
+
+                    // set this filter
+                    _this.handler.showFilterBlendBox(field, path, function () {
+
+                        // attach filter
+                        e.detail.attach();
+
+                        // go to first page
+                        _this.handler.currentPage = 0;
+
+                        // reload page
+                        _this.handler.loadPage();
+                    });
+                });
+
+                this.addEventListener('insert', function (e) {
+                    var data = e.detail;
+                    _this.handler.insert(data.url, data.id, data.data, data.submit);
+                });
+
+                this.addEventListener('get-reverse-link', function (e) {
+                    _this.handler.getReverseLink(e.detail.url, e.detail.id, e.detail.fieldName, e.detail.value, e.detail.success);
+                });
+            },
+
+            /**
+             * Update page nav buttons.
+             * @param  Array buttons a list of buttons
+             * @return void
+             */
+            updateNavButtons: function (buttons) {
+                this.pageButtons = buttons;
+            },
+
+            updateRecords: function (records) {
+                this.records = records;
+            },
+
+            /**
+             * Show new blend-box.
+             * @return void
+             */
+            showNewBlendBox: function () {
+                this.handler.showNewBlendBox();
+            },
+
+            /**
+             * Show delete blend-box.
+             * @return void
+             */
+            showDeleteBlendBox: function () {
+                this.handler.showDeleteBlendBox();
+            },
+
+            /**
+             * Show edit blend-box.
+             * @return void
+             */
+            showEditBlendBox: function () {
+                this.handler.showEditBlendBox();
+            },
+
+            updateHasSelection: function () {
+                var l = this.records.filter(function (record) {
+                    return record.checked;
+                }).length;
+                this.hasSelection = l != 0;
+                this.hasOneSelection = l == 1;
+            },
+
+            /**
+             * Switch to the selected page.
+             * @param  Object the event
+             * @return void
+             */
+            switchPage: function (e) {
+                var handler = this.handler,
+                        index;
+
+                // wait for event execution
+                this.async(function () {
+                    index = this.selectedPage;
+
+                    // already on this page
+                    if (handler.currentPage == index) return;
+
+                    // set page index
+                    handler.currentPage = index;
+
+                    // load page
+                    handler.currentPage = index;
+                    handler.loadPage();
+                });
+            }
         });
-
-        // clicked on a filter of a header
-        this.addEventListener('apply-filter', function(e) {
-          var field = e.detail.field,
-              path = e.detail.path.join('.');
-
-          // this field has an active filter
-          if (_this.handler.filter[path] && _this.handler.filter[path].isApplied) {
-
-            // remove this filter
-            _this.handler.filter[path].isApplied = false;
-
-            // detach filter
-            e.detail.detach();
-
-            // reload page
-            _this.handler.loadPage();
-
-            return;
-          }
-
-          // set this filter
-          _this.handler.showFilterBlendBox(field, path, function() {
-
-            // attach filter
-            e.detail.attach();
-
-            // go to first page
-            _this.handler.currentPage = 0;
-
-            // reload page
-            _this.handler.loadPage();
-          });
-        });
-
-        this.addEventListener('insert', function(e) {
-          var data = e.detail;
-          _this.handler.insert(data.url, data.id, data.data, data.submit);
-        });
-
-        this.addEventListener('get-reverse-link', function(e) {
-          _this.handler.getReverseLink(e.detail.url, e.detail.id, e.detail.fieldName, e.detail.value, e.detail.success);
-        });
-      },
-
-      /**
-       * Update page nav buttons.
-       * @param  Array buttons a list of buttons
-       * @return void
-       */
-      updateNavButtons: function(buttons) {
-        this.pageButtons = buttons;
-      },
-
-      updateRecords: function(records) {
-        this.records = records;
-      },
-
-      /**
-       * Show new blend-box.
-       * @return void
-       */
-      showNewBlendBox: function() {
-        this.handler.showNewBlendBox();
-      },
-
-      /**
-       * Show delete blend-box.
-       * @return void
-       */
-      showDeleteBlendBox: function() {
-        this.handler.showDeleteBlendBox();
-      },
-
-      /**
-       * Show edit blend-box.
-       * @return void
-       */
-      showEditBlendBox: function() {
-        this.handler.showEditBlendBox();
-      },
-
-      updateHasSelection: function() {
-        var l = this.records.filter(function(record) {
-          return record.checked;
-        }).length;
-        this.hasSelection = l != 0;
-        this.hasOneSelection = l == 1;
-      },
-
-      /**
-       * Switch to the selected page.
-       * @param  Object the event
-       * @return void
-       */
-      switchPage: function(e) {
-        var handler = this.handler,
-            index;
-
-        // wait for event execution
-        this.async(function() {
-          index = this.selectedPage;
-
-          // already on this page
-          if (handler.currentPage == index) return;
-
-          // set page index
-          handler.currentPage = index;
-
-          // load page
-          handler.currentPage = index;
-          handler.loadPage();
-        });
-      }
-    });
-  </script>
+    </script>
 </dom-module>

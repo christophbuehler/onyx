@@ -1,8 +1,13 @@
 <?php
+
+namespace Onyx\Libs;
+
 class Session
 {
     public static function init()
     {
+      session_save_path(getcwd() . '/Onyx/sessions');
+
       try {
         session_start();
       } catch (Exception $err) {

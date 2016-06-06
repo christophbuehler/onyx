@@ -1,0 +1,5 @@
+{
+    "require": {
+        "PHP-DI/invoker": "^1.3"
+    }
+}

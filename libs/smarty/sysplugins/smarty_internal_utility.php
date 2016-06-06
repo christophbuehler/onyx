@@ -496,7 +496,7 @@ class Smarty_Internal_Utility
         }
         if (!$_core_plugins_available) {
             $status = false;
-            $message = "WARNING: Smarty's own libs/plugins is not available";
+            $message = "WARNING: Smarty's own Libs/plugins is not available";
             if ($errors === null) {
                 echo $message . ".\n";
             } elseif (!isset($errors['plugins_dir'])) {
@@ -708,7 +708,7 @@ class Smarty_Internal_Utility
             }
             if ($expected) {
                 $status = false;
-                $message = "FAILED: files missing from libs/sysplugins: ". join(', ', array_keys($expected));
+                $message = "FAILED: files missing from Libs/sysplugins: ". join(', ', array_keys($expected));
                 if ($errors === null) {
                     echo $message . ".\n";
                 } else {
@@ -793,7 +793,7 @@ class Smarty_Internal_Utility
             }
             if ($expected) {
                 $status = false;
-                $message = "FAILED: files missing from libs/plugins: ". join(', ', array_keys($expected));
+                $message = "FAILED: files missing from Libs/plugins: ". join(', ', array_keys($expected));
                 if ($errors === null) {
                     echo $message . ".\n";
                 } else {

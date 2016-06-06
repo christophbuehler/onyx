@@ -52,7 +52,7 @@ class Smarty_Internal_Resource_Registered extends Smarty_Resource
      * Get timestamp (epoch) the template source was modified
      *
      * @param  Smarty_Template_Source $source source object
-     * @return integer|boolean        timestamp (epoch) the template was modified, false if resources has no timestamp
+     * @return integer|boolean        timestamp (epoch) the template was modified, false if Resources has no timestamp
      */
     public function getTemplateTimestamp(Smarty_Template_Source $source)
     {

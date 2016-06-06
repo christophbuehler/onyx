@@ -1,8 +1,11 @@
 <?php
 
-class PlainResponse extends HTTPResponse
+namespace Onyx\Http;
+
+class PlainResponse extends Response
 {
-  public function serialize(): string {
+  public function serialize(): string
+  {
     return $this->content;
   }
 }

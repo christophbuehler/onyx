@@ -64,7 +64,7 @@ $(document).ready(function() {
             },
             {
                 title: 'Click for Google',
-                url: 'http://google.com/',
+                url: 'Http://google.com/',
                 start: '2014-11-28'
             }
         ]
