@@ -2,12 +2,10 @@
     <style>
         :host {
             position: relative;
-            padding: 0 4px;
             white-space: nowrap;
             display: inline-block;
             height: 44px;
             vertical-align: top;
-            float: left;
         }
 
         :host:hover {
@@ -18,6 +16,10 @@
             cursor: default;
             position: relative;
             white-space: nowrap;
+            padding: 0 4px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
         }
 
         span {
