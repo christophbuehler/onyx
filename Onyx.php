@@ -40,7 +40,7 @@ class Onyx
 
     public function set_db(iDb $db)
     {
-        $this->$db = $db;
+        $this->db = $db;
     }
 
     /**

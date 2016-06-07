@@ -11,48 +11,61 @@ namespace Onyx\Libs;
 
 class User
 {
-  public $id;
-  private $roles = [];
-  private $isAuthenticated = false;
+    public $id;
+    private $roles = [];
+    private $isAuthenticated = false;
 
-  /**
-   * User constructor.
-   */
-  function __construct() { }
+    /**
+     * User constructor.
+     */
+    function __construct()
+    {
+    }
 
-  /**
-   * @param int $id
-   */
-  public function authenticate(int $id)
-  {
-    $this->id = $id;
-    $this->isAuthenticated = true;
-  }
+    /**
+     * Authenticate this user.
+     * @param int $id
+     */
+    public function authenticate(int $id)
+    {
+        $this->id = $id;
+        $this->isAuthenticated = true;
+    }
 
-  /**
-   * @param array $roles
-   */
-  public function set_roles(array $roles)
-  {
-    $this->roles = $roles;
-  }
+    /**
+     * Logout this user.
+     */
+    public function logout()
+    {
+        Session::remove('userId');
+        $this->id = null;
+        $this->isAuthenticated = false;
+    }
 
-  /**
-   * @param string $role
-   * @return bool
-   */
-  public function has_role(string $role)
-  {
-    foreach ($this->roles as $r)
-      if ($r == $role) return true;
-    return false;
-  }
+    /**
+     * @param array $roles
+     */
+    public function set_roles(array $roles)
+    {
+        $this->roles = $roles;
+    }
 
-  /**
-   * @return bool
-   */
-  public function is_authenticated()
-  {
-    return $this->isAuthenticated;
-  }
+    /**
+     * @param string $role
+     * @return bool
+     */
+    public function has_role(string $role): bool
+    {
+        foreach ($this->roles as $r)
+            if ($r == $role) return true;
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function is_authenticated(): bool
+    {
+        return $this->isAuthenticated;
+    }
 }

@@ -234,7 +234,9 @@ class TableOutputRenderer
             array_push($arr['buttons'], [
                 'num' => $h,
                 'from' => $this->tableOutput->parser->get_reverse_link_value($orderByField, $rows[$i][$orderBy]),
-                'to' => $this->tableOutput->parser->get_reverse_link_value($orderByField, $rows[min($i + $this->tableOutput->config->pageRecords, $sth->rowCount()) - 1][$orderBy]),
+                'to' => $this->tableOutput->parser->get_reverse_link_value(
+                    $orderByField,
+                    $rows[min($i + $this->tableOutput->config->pageRecords, $sth->rowCount()) - 1][$orderBy]),
             ]);
             ++$h;
         }

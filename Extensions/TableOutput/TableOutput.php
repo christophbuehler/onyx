@@ -6,7 +6,7 @@ require_once 'Langs/de.php';
 require_once 'Onyx/Extensions/TableOutput/config.php';
 
 use Exception;
-use Onyx\DataProviders\PDODatabase;
+use Onyx\DataProviders\PDODb;
 use Onyx\Extensions\TableOutput\Controllers\TableOutputController;
 use Onyx\Extensions\TableOutput\Controllers\TableOutputParser;
 use Onyx\Extensions\TableOutput\Models\TableOutputConfig;
@@ -36,10 +36,15 @@ class TableOutput
 
     /**
      * TableOuptut constructor.
+     * @param PDODb $db
+     * @param String $id
+     * @param TableOutputController $controller
+     * @param array $rootTableArgs
      * @param TableOutputConfig $config the table-output configuration
-     * @param TableOutputTable $table the table-output root table
+     * @throws Exception
+     * @internal param TableOutputTable $table the table-output root table
      */
-    public function __construct(PDODatabase $db, String $id, TableOutputController $controller, array $rootTableArgs, TableOutputConfig $config)
+    public function __construct(PDODb $db, String $id, TableOutputController $controller, array $rootTableArgs, TableOutputConfig $config)
     {
         $this->db = $db;
         $this->id = $id;

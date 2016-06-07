@@ -10,7 +10,7 @@
 namespace Onyx\Extensions\TableOutput\Controllers;
 
 use Exception;
-use Onyx\DataProviders\PDODatabase;
+use Onyx\DataProviders\PDODb;
 use Onyx\Extensions\TableOutput\Models\TableOutputConfig;
 use Onyx\Extensions\TableOutput\TableOutput;
 
@@ -19,11 +19,11 @@ class TableOutputController
   public $tableOutputs = array();
   private $db;
 
-  /**
-   * TableOutputController constructor.
-   * @param PDODatabase $db
-   */
-  public function __construct(PDODatabase $db)
+    /**
+     * TableOutputController constructor.
+     * @param PDODb|PDODatabase $db
+     */
+  public function __construct(PDODb $db)
   {
     $this->db = $db;
   }

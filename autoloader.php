@@ -9,7 +9,7 @@
 
 function autoloader($class)
 {
-  require_once str_replace('\\', '/', $class) . '.php';
+    require_once str_replace('\\', '/', $class) . '.php';
 }
 
 // error handling

@@ -36,24 +36,23 @@ class TableOutputConfig
         $this->allowDelete = $args['allowDelete'] ?? null;
         $this->allowEdit = $args['allowEdit'] ?? null;
         $this->allowAppend = $args['allowAppend'] ?? null;
-        $this->pageRecords = $args['pageRecords'] ?? null;
+        $this->pageRecords = $args['pageRecords'] ?? TABLE_OUTPUT_DEFAULT_PAGE_RECORDS;
         $this->allowFilter = $args['allowFilter'] ?? null;
         $this->orderBy = $args['orderBy'] ?? null;
         $this->orderByReversed = $args['orderByReversed'] ?? null;
         $this->singlePage = $args['singlePage'] ?? null;
-        $this->pageRecords = $args['pageRecords'] ?? null;
         $this->allowSinglePage = $args['allowSinglePage'] ?? null;
 
         if (isset($args['readOnly']) && $args['readOnly']) {
             $this->readOnly = true;
 
-            if ($args['allowDelete'] !== null)
+            if (isset($args['allowDelete']))
                 throw new Exception('"allowDelete" has no effect, if "readOnly" is set.');
 
-            if ($args['allowEdit'] !== null)
+            if (isset($args['allowEdit']))
                 throw new Exception('"allowEdit" has no effect, if "readOnly" is set.');
 
-            if ($args['allowAppend'] !== null)
+            if (isset($args['allowAppend']))
                 throw new Exception('"allowAppend" has no effect, if "readOnly" is set.');
 
             $this->allowDelete = false;
@@ -61,7 +60,7 @@ class TableOutputConfig
             $this->allowAppend = false;
         }
 
-        if ($args['orientation'] === null) return;
+        if (!isset($args['orientation'])) return;
 
         switch ($args['orientation']) {
             case 'vertical':

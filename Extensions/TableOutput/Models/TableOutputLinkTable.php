@@ -47,10 +47,10 @@ class TableOutputLinkTable extends TableOutputTable
     public function compose_link_query(): string
     {
         $fieldNames = [];
-        foreach ($this->fields as $field) {
-            array_push($fieldNames, $field->name);
-        }
 
+        foreach ($this->fields as $field)
+            array_push($fieldNames, $field->name);
+        
         $linkQuery = sprintf('SELECT %s FROM %s WHERE %s = :id',
             implode($fieldNames, ','), $this->name, $this->id);
 

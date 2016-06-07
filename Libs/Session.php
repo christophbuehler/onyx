@@ -19,14 +19,14 @@ class Session
      */
     public static function init()
     {
-      session_save_path(getcwd() . '/Onyx/sessions');
+        session_save_path(getcwd() . '/Onyx/sessions');
 
-      try {
-        session_start();
-      } catch (Exception $err) {
-        (new PlainResponse(500, 'Could not start session.'))
-          ->send();
-      }
+        try {
+            session_start();
+        } catch (Exception $err) {
+            (new PlainResponse(500, 'Could not start session.'))
+                ->send();
+        }
     }
 
     /**
@@ -36,7 +36,7 @@ class Session
      */
     public static function set($key, $value)
     {
-      $_SESSION[$key] = $value;
+        $_SESSION[$key] = $value;
     }
 
     /**
@@ -46,8 +46,19 @@ class Session
      */
     public static function get($key)
     {
-      if (isset($_SESSION[$key]))
-        return $_SESSION[$key];
+        if (isset($_SESSION[$key]))
+            return $_SESSION[$key];
+
+        return null;
+    }
+
+    /**
+     * Remove a session key.
+     * @param $key
+     */
+    public static function remove($key)
+    {
+        unset($_SESSION[$key]);
     }
 
     /**
@@ -55,7 +66,7 @@ class Session
      */
     public static function close()
     {
-      session_write_close();
+        session_write_close();
     }
 
     /**
@@ -63,6 +74,6 @@ class Session
      */
     public static function destroy()
     {
-      session_destroy();
+        session_destroy();
     }
 }

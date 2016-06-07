@@ -76,15 +76,17 @@ class TableOutputRow
      */
     private function get_field_values(TableOutputField $field, array $row): array
     {
+        $val = $row[$field->name] ?? "";
+
         $arr = [
 
             // the original value
-            'value' => $row[$field->name],
+            'value' => $val,
 
             // the validated field content
             'content' => $this->parser->validate_content(
                 $field->type,
-                $row[$field->name]),
+                $val),
 
             'fields' => [],
         ];
@@ -93,9 +95,9 @@ class TableOutputRow
 
         $fields = [];
 
-        $arr['content'] = $this->parser->get_reverse_link_value($field, $row[$field->name]);
+        $arr['content'] = $this->parser->get_reverse_link_value($field, $val);
 
-        $linkValues = $this->parser->get_link_values($field->link, $row[$field->name] ?? '');
+        $linkValues = $this->parser->get_link_values($field->link, $val);
 
         foreach ($field->link->fields as $lField)
             array_push($fields, $this->get_field_values($lField, $linkValues));

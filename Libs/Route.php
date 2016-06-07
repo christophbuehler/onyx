@@ -48,7 +48,7 @@ class Route
      * @param string $via
      * @return Route
      */
-    public function via(string $via): Route
+    public function via(array $via): Route
     {
         $this->via = $via;
         return $this;
@@ -109,7 +109,7 @@ class Route
     {
         if ($this->via === null) return true;
         foreach ($this->via as $via)
-            if ($via == $method) return true;
+            if (strtolower($via) == strtolower($method)) return true;
         return false;
     }
 

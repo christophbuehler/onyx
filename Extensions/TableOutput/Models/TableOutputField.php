@@ -39,22 +39,22 @@ class TableOutputField
 
         $this->name = $args['name'] ?? null;
 
-        if ($args['header'] !== null)
+        if (isset($args['header']))
             $this->header = trim($args['header']);
 
-        if ($args['predefined'] !== null)
+        if (isset($args['predefined']))
             $this->predefined = $args['predefined'];
 
-        if ($args['link'] !== null)
+        if (isset($args['link']))
             $this->link = new TableOutputLinkTable($args['link'], $this->tableOutput);
 
-        if ($args['href'] !== null)
+        if (isset($args['href']))
             $this->href = $args['href'];
 
-        if ($args['suggestion'] !== null)
+        if (isset($args['suggestion']))
             $this->suggestion = $args['suggestion'];
 
-        if ($args['type'] !== null)
+        if (isset($args['type']))
             $this->type = $args['type'];
     }
 

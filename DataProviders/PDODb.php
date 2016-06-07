@@ -9,9 +9,11 @@
 
 namespace Onyx\DataProviders;
 
+use Exception;
+use Onyx\Http\PlainResponse;
 use PDO;
 
-class PDODatabase extends PDO implements iDatabase
+class PDODb extends PDO implements iDb
 {
 
   /**
@@ -27,7 +29,7 @@ class PDODatabase extends PDO implements iDatabase
   {
     try {
       parent::__construct($dbType . ':host=' . $dbHost . ';dbname=' . $dbName . ';charset=' . $dbCharset, $dbUser, $dbPass);
-    } catch(exception $e) {
+    } catch(Exception $e) {
       (new PlainResponse(500, 'No database connection.'))
         ->send();
     }

@@ -299,9 +299,10 @@ class ClassLoader
     {
         if ($file = $this->findFile($class)) {
             includeFile($file);
-
             return true;
         }
+
+        return null;
     }
 
     /**

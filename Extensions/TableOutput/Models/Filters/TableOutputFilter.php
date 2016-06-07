@@ -18,7 +18,7 @@ abstract class TableOutputFilter implements iTableOutputFilter
     {
         $this->field = $field;
     }
-
+    
     /**
      * Get filter fields.
      * @param object $parser the parser object

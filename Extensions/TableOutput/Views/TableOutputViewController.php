@@ -10,7 +10,7 @@
 namespace Onyx\Extensions\TableOutput\Views;
 
 use Exception;
-use Onyx\DataProviders\PDODatabase;
+use Onyx\DataProviders\PDODb;
 use Onyx\Extensions\TableOutput\Controllers\TableOutputController;
 use Onyx\Extensions\TableOutput\Exceptions\SQLException;
 use Onyx\Extensions\TableOutput\TableOutput;
@@ -26,10 +26,10 @@ class TableOutputViewController extends Controller
 
     /**
      * TableOutputViewController constructor.
-     * @param PDODatabase $db
+     * @param PDODb $db
      * @param User $user
      */
-    function __construct(PDODatabase $db, User $user)
+    function __construct(PDODb $db, User $user)
     {
         parent::__construct($db, $user);
         $this->tableOutputController = new TableOutputController($db);

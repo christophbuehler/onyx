@@ -15,7 +15,6 @@ use Onyx\Extensions\TableOutput\Models\TableOutputField;
 use Onyx\Extensions\TableOutput\Models\TableOutputLinkTable;
 use Onyx\Extensions\TableOutput\Views\TableOutputRow;
 use Onyx\Extensions\TableOutput\TableOutput;
-use Onyx\Http\JSONResponse;
 use PDO;
 
 class TableOutputParser
@@ -70,19 +69,18 @@ class TableOutputParser
      * @return mixed
      * @throws SQLException
      */
-    public function get_link_values(TableOutputLinkTable $link, string $id)
+    public function get_link_values(TableOutputLinkTable $link, string $id): array
     {
         $db = $this->tableOutput->db;
         $sth = $db->prepare($link->compose_link_query());
 
-        if (!$sth->execute(array(
-            ':id' => $id,
-        ))
-        ) {
+        if (!$sth->execute([':id' => $id]))
             throw new SQLException(sprintf('Could not get link value for link id: %s', $id), $sth);
-        }
 
         $result = $sth->fetch();
+
+        // the referenced value does not exist
+        if ($sth->rowCount() == 0) return [];
 
         return $result;
     }
