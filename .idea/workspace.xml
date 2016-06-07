@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f314afa6-dd8b-4575-91fb-f0a1c4ca1d0d" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-field.html" afterPath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-field.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-header.html" afterPath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-header.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-row.html" afterPath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-row.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" afterPath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" />
     </list>
     <ignored path="onyx.iws" />
@@ -27,8 +31,38 @@
       <file leaf-file-name="table-output.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="333" column="0" selection-start-line="333" selection-start-column="0" selection-end-line="333" selection-end-column="0" />
+            <state relative-caret-position="387">
+              <caret line="313" column="24" selection-start-line="313" selection-start-column="24" selection-end-line="313" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="table-output-row.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-row.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="38" selection-start-line="10" selection-start-column="38" selection-end-line="10" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="table-output-field.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-field.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="table-output-header.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-header.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="103">
+              <caret line="117" column="20" selection-start-line="117" selection-start-column="20" selection-end-line="117" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -42,6 +76,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-field.html" />
+        <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-header.html" />
+        <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-row.html" />
         <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" />
       </list>
     </option>
@@ -54,8 +91,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="1892" />
-    <option name="y" value="337" />
+    <option name="x" value="1912" />
+    <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1216" />
   </component>
@@ -215,15 +252,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1465312345413</updated>
-      <workItem from="1465312347291" duration="1227000" />
+      <workItem from="1465312347291" duration="3209000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1227000" />
+    <option name="totallyTimeSpent" value="3209000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1892" y="337" width="1936" height="1216" extended-state="0" />
+    <frame x="1912" y="-8" width="1936" height="1216" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -261,10 +298,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-field.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-header.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="103">
+          <caret line="117" column="20" selection-start-line="117" selection-start-column="20" selection-end-line="117" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-row.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="38" selection-start-line="10" selection-start-column="38" selection-end-line="10" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="333" column="0" selection-start-line="333" selection-start-column="0" selection-end-line="333" selection-end-column="0" />
+        <state relative-caret-position="387">
+          <caret line="313" column="24" selection-start-line="313" selection-start-column="24" selection-end-line="313" selection-end-column="24" />
           <folding />
         </state>
       </provider>
