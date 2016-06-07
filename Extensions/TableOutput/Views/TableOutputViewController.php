@@ -73,9 +73,10 @@ class TableOutputViewController extends Controller
     {
         if (!$this->allowXHR) return false;
 
-        return $this->tableOutputController->get_table_by_id($id)
+        return new JSONResponse($this->tableOutputController
+            ->get_table_by_id($id)
             ->renderer
-            ->get_structure();
+            ->get_structure());
     }
 
     /**

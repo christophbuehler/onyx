@@ -57,7 +57,7 @@ class TableOutputRenderer
      * Get the table-output field structure.
      * @return array the structure
      */
-    public function get_structure()
+    public function get_structure(): array
     {
         $structure = [];
         $sFields = $this->tableOutput->rootTable->fields;
