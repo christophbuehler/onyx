@@ -7,7 +7,6 @@
 
         .table-head {
             white-space: nowrap;
-            padding-left: 48px;
             display: inline-block;
             min-width: 100%;
             -webkit-box-sizing: border-box;
@@ -310,6 +309,11 @@
                 display: none;
             }
         }
+
+        #table-options {
+            width: 48px;
+            height: 36px;
+        }
     </style>
     <template strip-whitespace>
         <div class="table-output-bounding-box">
@@ -336,7 +340,7 @@
                 <div class="table-scroll-box">
                     <div class="table-head">
                         <div class="table-head-wrapper">
-
+                            <paper-icon-button icon="icons:more-horiz" id="table-options"></paper-icon-button>
                             <!-- show table head -->
                             <template is="dom-repeat" items="{{structure}}"><!--
                 -->
