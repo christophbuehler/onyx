@@ -113,10 +113,9 @@
         }
     </style>
     <template strip-whitespace>
-
         <template is="dom-if" if="[[contains('link', field.type)]]">
-            <template is="dom-repeat" items="{{field.link.fields}}"><!--
-        --><table-output-header breadcrumb="{{breadcrumb}} › {{field.header}}" order-by="{{orderBy}}"
+            <template is="dom-repeat" items="{{field.link.fields}}">
+                <table-output-header breadcrumb="{{breadcrumb}} › {{field.header}}" order-by="{{orderBy}}"
                                      is-order-by-reversed="{{isOrderByReversed}}" is-link
                                      field="{{item}}"></table-output-header><!--
       --></template>
