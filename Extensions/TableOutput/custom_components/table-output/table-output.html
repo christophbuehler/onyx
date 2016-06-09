@@ -330,14 +330,27 @@
     <template strip-whitespace>
 
         <app-header-layout has-scrolling-region>
-            <app-header style="background: #2196F3;" condenses fixed effects="resize-title blend-background waterfall">
+            <app-header style="background: #2196F3;" fixed effects="resize-title blend-background waterfall">
                 <app-toolbar>
                     <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-                    <h4 condensed-title>HMB</h4>
+                    <div title>HMB</div>
                     <paper-icon-button icon="icons:close" on-tap="logout"></paper-icon-button>
                 </app-toolbar>
                 <app-toolbar>
-                    <h1 title>HMB</h1>
+                    <div class="table-head">
+                        <div class="table-head-wrapper">
+                            <paper-icon-button icon="icons:more-horiz" id="table-options"></paper-icon-button>
+
+
+                            <!-- show table head -->
+                            <template is="dom-repeat" items="{{structure}}"><!--
+                -->
+                                <table-output-header order-by="{{orderBy}}"
+                                                     is-order-by-reversed="{{isOrderByReversed}}"
+                                                     field="{{item}}"></table-output-header><!--
+              --></template>
+                        </div>
+                    </div>
                 </app-toolbar>
             </app-header>
             <div class="table-output-bounding-box">
@@ -362,20 +375,6 @@
                 </div>
                 <div class="table-content" hidden="[[isLoading]]">
                     <div class="table-scroll-box">
-                        <div class="table-head">
-                            <div class="table-head-wrapper">
-                                <paper-icon-button icon="icons:more-horiz" id="table-options"></paper-icon-button>
-
-
-                                <!-- show table head -->
-                                <template is="dom-repeat" items="{{structure}}"><!--
-                -->
-                                    <table-output-header order-by="{{orderBy}}"
-                                                         is-order-by-reversed="{{isOrderByReversed}}"
-                                                         field="{{item}}"></table-output-header><!--
-              --></template>
-                            </div>
-                        </div>
                         <div class="body-scroll-wrapper">
                             <div class="table-body" on-tap="updateHasSelection">
 
