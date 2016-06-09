@@ -5,6 +5,13 @@
             height: 100%;
         }
 
+        --app-header-shadow {
+            box-shadow: none;
+        }
+
+        /* temp */
+        #blendBox { display: none; }
+
         .table-head {
             white-space: nowrap;
             display: inline-block;
@@ -321,6 +328,23 @@
         }
     </style>
     <template strip-whitespace>
+
+        <app-header-layout has-scrolling-region>
+            <app-header style="background: #2196F3;" condenses fixed effects="resize-title blend-background waterfall">
+                <app-toolbar>
+                    <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                    <h4 condensed-title>HMB</h4>
+                    <paper-icon-button icon="icons:close" on-tap="logout"></paper-icon-button>
+                </app-toolbar>
+                <app-toolbar>
+                    <h1 title>HMB</h1>
+                </app-toolbar>
+            </app-header>
+            <div>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab animi consectetur delectus deleniti dolore, ducimus expedita itaque labore laboriosam nisi nobis officiis omnis provident, quas quisquam repellat, tenetur velit veritatis.
+            </div>
+        </app-header-layout>
+
         <div class="table-output-bounding-box">
             <div class="table-output-info">
                 <div id="fab-container">
