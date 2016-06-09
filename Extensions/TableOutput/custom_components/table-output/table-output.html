@@ -18,7 +18,7 @@
             flex-grow: 0;
             height: 44px;
         }
-        
+
         .table-head-wrapper {
             display: inline-block;
             white-space: nowrap;
@@ -320,6 +320,11 @@
         }
     </style>
     <template strip-whitespace>
+        <app-header condenses fixed effects="resize-title blend-background waterfall"
+                    class="x-scope app-header-0">
+        </app-header>
+
+
         <div class="table-output-bounding-box">
             <div class="table-output-info">
                 <div id="fab-container">
@@ -350,7 +355,8 @@
                             <!-- show table head -->
                             <template is="dom-repeat" items="{{structure}}"><!--
                 -->
-                                <table-output-header order-by="{{orderBy}}" is-order-by-reversed="{{isOrderByReversed}}"
+                                <table-output-header order-by="{{orderBy}}"
+                                                     is-order-by-reversed="{{isOrderByReversed}}"
                                                      field="{{item}}"></table-output-header><!--
               --></template>
                         </div>

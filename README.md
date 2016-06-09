@@ -56,8 +56,8 @@ $app->set_user_roles(function (User $user, Database $db) use ($app) {
 		  LEFT JOIN login_has_role ON 
 		  login_has_role.role_id = role.id
 		WHERE login_has_role.login_id = :userId');
-    $sth->execute([':userId' => $user->id]);
-    $user->set_roles($sth->fetchAll(PDO::FETCH_COLUMN, 0));
+    if ($sth->execute([':userId' => $user->id]))
+		$user->set_roles($sth->fetchAll(PDO::FETCH_COLUMN, 0));
 });
 ```
 
