@@ -27,8 +27,8 @@
       <file leaf-file-name="table-output.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="336" column="51" selection-start-line="336" selection-start-column="51" selection-end-line="336" selection-end-column="51" />
+            <state relative-caret-position="1271">
+              <caret line="406" column="18" selection-start-line="406" selection-start-column="18" selection-end-line="406" selection-end-column="18" />
               <folding>
                 <element signature="n#style#0;n#app-header#0;n#app-header-layout#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
               </folding>
@@ -257,12 +257,12 @@
       <option name="presentableId" value="Default" />
       <updated>1465312345413</updated>
       <workItem from="1465312347291" duration="4398000" />
-      <workItem from="1465508185734" duration="3447000" />
+      <workItem from="1465508185734" duration="4064000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7845000" />
+    <option name="totallyTimeSpent" value="8462000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
@@ -362,8 +362,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="336" column="51" selection-start-line="336" selection-start-column="51" selection-end-line="336" selection-end-column="51" />
+        <state relative-caret-position="1271">
+          <caret line="406" column="18" selection-start-line="406" selection-start-column="18" selection-end-line="406" selection-end-column="18" />
           <folding>
             <element signature="n#style#0;n#app-header#0;n#app-header-layout#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
           </folding>

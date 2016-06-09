@@ -340,76 +340,74 @@
                     <h1 title>HMB</h1>
                 </app-toolbar>
             </app-header>
-            <div>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab animi consectetur delectus deleniti dolore, ducimus expedita itaque labore laboriosam nisi nobis officiis omnis provident, quas quisquam repellat, tenetur velit veritatis.
-            </div>
-        </app-header-layout>
+            <div class="table-output-bounding-box">
+                <div class="table-output-info">
+                    <div id="fab-container">
 
-        <div class="table-output-bounding-box">
-            <div class="table-output-info">
-                <div id="fab-container">
+                        <!-- has at least one selection -->
+                        <template is="dom-if" if="{{hasSelection}}">
 
-                    <!-- has at least one selection -->
-                    <template is="dom-if" if="{{hasSelection}}">
+                            <!-- show edit button because exactly one entry is selected -->
+                            <template is="dom-if" if="{{hasOneSelection}}">
+                                <paper-fab class="edit-fab" on-tap="showEditBlendBox" icon="icons:create"></paper-fab>
+                            </template>
 
-                        <!-- show edit button because exactly one entry is selected -->
-                        <template is="dom-if" if="{{hasOneSelection}}">
-                            <paper-fab class="edit-fab" on-tap="showEditBlendBox" icon="icons:create"></paper-fab>
+                            <!-- show delete button because more than one entry is selected -->
+                            <paper-fab class="remove-fab" on-tap="showDeleteBlendBox" icon="remove"></paper-fab>
                         </template>
 
-                        <!-- show delete button because more than one entry is selected -->
-                        <paper-fab class="remove-fab" on-tap="showDeleteBlendBox" icon="remove"></paper-fab>
-                    </template>
-
-                    <!-- show new button because nothing is selected -->
-                    <paper-fab class="new-fab" on-tap="showNewBlendBox" icon="add"></paper-fab>
+                        <!-- show new button because nothing is selected -->
+                        <paper-fab class="new-fab" on-tap="showNewBlendBox" icon="add"></paper-fab>
+                    </div>
                 </div>
-            </div>
-            <div class="table-content" hidden="[[isLoading]]">
-                <div class="table-scroll-box">
-                    <div class="table-head">
-                        <div class="table-head-wrapper">
-                            <paper-icon-button icon="icons:more-horiz" id="table-options"></paper-icon-button>
+                <div class="table-content" hidden="[[isLoading]]">
+                    <div class="table-scroll-box">
+                        <div class="table-head">
+                            <div class="table-head-wrapper">
+                                <paper-icon-button icon="icons:more-horiz" id="table-options"></paper-icon-button>
 
 
-                            <!-- show table head -->
-                            <template is="dom-repeat" items="{{structure}}"><!--
+                                <!-- show table head -->
+                                <template is="dom-repeat" items="{{structure}}"><!--
                 -->
-                                <table-output-header order-by="{{orderBy}}"
-                                                     is-order-by-reversed="{{isOrderByReversed}}"
-                                                     field="{{item}}"></table-output-header><!--
+                                    <table-output-header order-by="{{orderBy}}"
+                                                         is-order-by-reversed="{{isOrderByReversed}}"
+                                                         field="{{item}}"></table-output-header><!--
               --></template>
+                            </div>
                         </div>
-                    </div>
-                    <div class="body-scroll-wrapper">
-                        <div class="table-body" on-tap="updateHasSelection">
+                        <div class="body-scroll-wrapper">
+                            <div class="table-body" on-tap="updateHasSelection">
 
-                            <!-- show table rows -->
-                            <template is="dom-repeat" items="[[records]]"><!--
+                                <!-- show table rows -->
+                                <template is="dom-repeat" items="[[records]]"><!--
                             -->
-                                <table-output-row structure="[[structure]]" row="[[item]]"></table-output-row><!--
+                                    <table-output-row structure="[[structure]]" row="[[item]]"></table-output-row><!--
               --></template>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <template is="dom-if" if="printPageButtons">
+                    <template is="dom-if" if="printPageButtons">
 
-                    <!-- print page buttons -->
-                    <paper-tabs id="overflowTabs" scrollable selected="{{selectedPage}}">
-                        <template is="dom-repeat" items="{{pageButtons}}">
-                            <paper-tab on-tap="switchPage">
-                                <div class='nav-btn'>
-                                    <span class='num'>{{item.num}}</span>
+                        <!-- print page buttons -->
+                        <paper-tabs id="overflowTabs" scrollable selected="{{selectedPage}}">
+                            <template is="dom-repeat" items="{{pageButtons}}">
+                                <paper-tab on-tap="switchPage">
+                                    <div class='nav-btn'>
+                                        <span class='num'>{{item.num}}</span>
                                     <span class='desc'>
                                         <span class='l'>{{item.from}}</span> to <span class='l'>{{item.to}}</span>
                                     </span>
-                                </div>
-                            </paper-tab>
-                        </template>
-                    </paper-tabs>
-                </template>
+                                    </div>
+                                </paper-tab>
+                            </template>
+                        </paper-tabs>
+                    </template>
+                </div>
             </div>
-        </div>
+        </app-header-layout>
+
+
         <blend-box
                 url="[[viewUrl]]"
                 table-output-id="[[id]]"
