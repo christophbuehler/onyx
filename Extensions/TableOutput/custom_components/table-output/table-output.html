@@ -375,14 +375,25 @@
                 <iron-ajax id="ajax" loading="{{loadingData}}" url="[[_getAPIEndpoint(page)]]"
                            handle-as="text" on-response="_didReceiveResponse"></iron-ajax>
 
-                    <iron-ajax url="https://hmbdata.li/api/personen/alle/?id=alle_personen&page=0&orderBy=&orderByReversed=0&method=records" last-response="{{data}}" auto></iron-ajax>
-                    <iron-list items="[[data]]" as="item">
-                        <template>
-                            <div>
-                                Name: [[item.name]]
-                            </div>
-                        </template>
-                    </iron-list>
+                <iron-list items="[[data]]" as="item">
+                    <template>
+                        <div>
+                            Name: [[item.name]]
+                        </div>
+                    </template>
+                </iron-list>
+
+
+                <div class="loadingIndicator" hidden$="[[!loadingData]]">
+                    <paper-spinner active$="[[loadingPhotos]]"></paper-spinner> Fetching photos for <b>[[searchText]]</b>
+                </div>
+
+                <!-- this element loads more photos when the user scrolls down and reached the lower threshold -->
+                <iron-scroll-threshold id="scrollTheshold"
+                                       lower-threshold="500"
+                                       on-lower-threshold="_loadMorePhotos"
+                                       scroll-target="document">
+                </iron-scroll-threshold>
 
                 <div class="table-content" hidden="[[isLoading]]">
                     <div class="table-scroll-box">
@@ -473,6 +484,7 @@
                         return {};
                     }
                 },
+                loadingData: Boolean,
                 numberOfRecords: Number,
                 handler: Object,
                 hasOneSelection: {
@@ -485,6 +497,10 @@
                 },
                 viewUrl: {
                     type: String
+                },
+                page: {
+                    type: Number,
+                    value: 1
                 }
             },
             ready: function () {
@@ -494,10 +510,10 @@
                 this.handler = new TableOutputHandler(this, this.viewUrl + '/');
 
                 // load the first page
-                this.async(function () {
+                /*this.async(function () {
                     this.handler.currentPage = 0;
                     this.handler.loadPage();
-                });
+                });*/
 
                 // clicked on a header
                 this.addEventListener('update-order-by', function (e) {
@@ -657,7 +673,7 @@
             _didReceiveResponse: function(e) {
                 console.log(e.detail.response);
                 alert("sdfsd");
-                var payload = JSON.parse(e.detail.response.match('jsonFlickrApi\\((.*)\\)')[1]);
+                /* var payload = JSON.parse(e.detail.response.match('jsonFlickrApi\\((.*)\\)')[1]);
 
                 if (!payload || !payload.photos || !payload.photos.photo) {
                     return;
@@ -667,7 +683,16 @@
                     this.push('photos', photo);
                 }, this);
 
-                this.$.scrollTheshold.clearTriggers();
+                this.$.scrollTheshold.clearTriggers();*/
+            },
+
+            _loadMoreRecords: function() {
+                if (this.$.ajax.lastRequest) {
+                    this.$.ajax.lastRequest.abort();
+                }
+
+                this.page++;
+                this.$.ajax.generateRequest();
             },
         });
     </script>

@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f314afa6-dd8b-4575-91fb-f0a1c4ca1d0d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" afterPath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/js/TableOutputHandler.js" afterPath="$PROJECT_DIR$/Extensions/TableOutput/js/TableOutputHandler.js" />
     </list>
     <ignored path="onyx.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,8 +27,8 @@
       <file leaf-file-name="table-output.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="649">
-              <caret line="658" column="31" selection-start-line="658" selection-start-column="31" selection-end-line="658" selection-end-column="31" />
+            <state relative-caret-position="281">
+              <caret line="669" column="57" selection-start-line="669" selection-start-column="57" selection-end-line="669" selection-end-column="57" />
               <folding>
                 <element signature="n#style#0;n#app-header#0;n#app-header-layout#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
               </folding>
@@ -291,12 +290,12 @@
       <option name="presentableId" value="Default" />
       <updated>1465312345413</updated>
       <workItem from="1465312347291" duration="4398000" />
-      <workItem from="1465508185734" duration="5584000" />
+      <workItem from="1465508185734" duration="6480000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9982000" />
+    <option name="totallyTimeSpent" value="10878000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
@@ -404,8 +403,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="649">
-          <caret line="658" column="31" selection-start-line="658" selection-start-column="31" selection-end-line="658" selection-end-column="31" />
+        <state relative-caret-position="281">
+          <caret line="669" column="57" selection-start-line="669" selection-start-column="57" selection-end-line="669" selection-end-column="57" />
           <folding>
             <element signature="n#style#0;n#app-header#0;n#app-header-layout#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
           </folding>
