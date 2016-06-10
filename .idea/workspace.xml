@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f314afa6-dd8b-4575-91fb-f0a1c4ca1d0d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" afterPath="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Extensions/TableOutput/js/TableOutputHandler.js" afterPath="$PROJECT_DIR$/Extensions/TableOutput/js/TableOutputHandler.js" />
     </list>
     <ignored path="onyx.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,11 +28,21 @@
       <file leaf-file-name="table-output.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="379">
-              <caret line="335" column="35" selection-start-line="335" selection-start-column="35" selection-end-line="335" selection-end-column="35" />
+            <state relative-caret-position="649">
+              <caret line="658" column="31" selection-start-line="658" selection-start-column="31" selection-end-line="658" selection-end-column="31" />
               <folding>
                 <element signature="n#style#0;n#app-header#0;n#app-header-layout#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TableOutputHandler.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/js/TableOutputHandler.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="855">
+              <caret line="293" column="15" selection-start-line="293" selection-start-column="15" selection-end-line="293" selection-end-column="15" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -77,6 +88,7 @@
         <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-field.html" />
         <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-row.html" />
         <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output-header.html" />
+        <option value="$PROJECT_DIR$/Extensions/TableOutput/js/TableOutputHandler.js" />
         <option value="$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html" />
       </list>
     </option>
@@ -153,6 +165,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="TableOutput" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="onyx" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="onyx" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Extensions" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TableOutput" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -257,12 +291,12 @@
       <option name="presentableId" value="Default" />
       <updated>1465312345413</updated>
       <workItem from="1465312347291" duration="4398000" />
-      <workItem from="1465508185734" duration="4344000" />
+      <workItem from="1465508185734" duration="5584000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8742000" />
+    <option name="totallyTimeSpent" value="9982000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
@@ -360,10 +394,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/js/TableOutputHandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="855">
+          <caret line="293" column="15" selection-start-line="293" selection-start-column="15" selection-end-line="293" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Extensions/TableOutput/custom_components/table-output/table-output.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="335" column="35" selection-start-line="335" selection-start-column="35" selection-end-line="335" selection-end-column="35" />
+        <state relative-caret-position="649">
+          <caret line="658" column="31" selection-start-line="658" selection-start-column="31" selection-end-line="658" selection-end-column="31" />
           <folding>
             <element signature="n#style#0;n#app-header#0;n#app-header-layout#0;n#template#0;n#dom-module#0;n#!!top" expanded="true" />
           </folding>

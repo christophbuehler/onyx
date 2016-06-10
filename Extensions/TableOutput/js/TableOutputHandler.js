@@ -291,6 +291,8 @@ TableOutputHandler.prototype = {
                 method: 'records'
             };
 
+        return;
+
         // display loading animation
         this.tableOutput.isLoading = true;
         this.selectedRows = {};
@@ -317,6 +319,18 @@ TableOutputHandler.prototype = {
                 if (success) success();
             });
         }, 400);
+    },
+
+    getAPIEndpoint: function(page) {
+        return sprintf('%s?id=%s&page=&s&orderBy=%s&orderByReversed=%s&filter=%s&method=%s',
+            this.serverUrl,
+            this.tableOutputId,
+            page,
+            this.tableOutput.orderBy,
+            this.tableOutput.isOrderByReversed ? 1 : 0,
+            this.filter,
+            'records'
+        );
     },
 
     /**
