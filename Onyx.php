@@ -10,6 +10,7 @@
 namespace Onyx;
 
 use Exception;
+use Onyx\Http\JSONResponse;
 use Onyx\Http\PlainResponse;
 use Onyx\Libs\Session;
 use Onyx\Libs\User;
@@ -78,13 +79,28 @@ class Onyx
      */
     public function run()
     {
+		if ($this->url == 'index.php') {
+			$this->show_dashboard();
+			exit;
+		}
+		
         foreach ($this->routes as $route)
             if ($route->execute($this->url, $this->reqMethod, $this->db, $this->user, $this->reqArgs)) exit;
 
         (new PlainResponse('Argument match error.', 400))
             ->send();
     }
-
+	
+	public function show_dashboard() {
+		$routes = [];
+		foreach ($this->routes as $route)
+			array_push($routes, $route->get_summary());
+			
+		(new JSONResponse($routes))
+            ->send();
+		var_dump($routes);
+	}
+	
     /**
      * Set the request method.
      */

@@ -15,10 +15,9 @@ use PDO;
 
 class JSONFileDb implements iDb
 {
-  public $obj;
-
   private $fileContents;
   private $fileName;
+  private $obj;
 
   /**
    * JSONFileDb constructor.
@@ -27,9 +26,20 @@ class JSONFileDb implements iDb
   public function __construct(string $file)
   {
     $this->fileName = $file;
+	  $this->fileContents = file_exists($file) ? file_get_contents($file) : '[]';
+	  $this->obj = json_decode($this->fileContents, true);
   }
 
-  private function save() {
+  public function set($key, $value) {
+    $this->obj[$key] = $value;
+    $this->save();
+  }
+
+  public function get($key) {
+    return $this->obj[$key];
+  }
+
+  public function save() {
     file_put_contents($this->fileName, json_encode($this->obj));
   }
 }

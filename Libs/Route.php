@@ -21,6 +21,15 @@ class Route
     private $dest;
     private $via;
     private $roles;
+	
+	public function get_summary()
+	{
+		return [
+			'path' => $this->path,
+			'dest' => $this->dest,
+			'via' => $this->via,
+			'roles' => $this->roles ];
+	}
 
     /**
      * Route constructor.
