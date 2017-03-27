@@ -27,7 +27,7 @@ $app
 $app->run();
 ```
 
-# Using A Data Provider
+# Use Data Providers
 
 ```php
 use Onyx\DataProviders\PDODb;
@@ -36,7 +36,7 @@ $app->set_db(new PDODb(
 ));
 ```
 
-# Creating Custom Data Providers
+# Create Custom Data Providers
 
 Onyx ships with a PDO data provider.
 You can create a custom data provider by simply implementing the Onyx\DataProviders\iDb interface.
